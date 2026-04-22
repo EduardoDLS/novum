@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/auth'
+import type { ContentStatus } from '@/types/novum'
 
 const UpdateClientSchema = z.object({
   clientId: z.string().uuid(),
@@ -137,5 +138,103 @@ export async function updateInstagramAnalytics(formData: FormData): Promise<Clie
   if (error) return { ok: false, error: error.message }
 
   revalidatePath(`/clientes/${clientId}`)
+  return { ok: true }
+}
+
+// ─── Ideas management (team) ────────────────────────────────────────────────
+
+const CreateIdeaSchema = z.object({
+  clientId: z.string().uuid(),
+  title: z.string().trim().min(2, 'Escribe el título del video.').max(280),
+  status: z.enum(['baby_idea', 'guionizar', 'grabacion', 'edicion', 'revision', 'publicado']).default('baby_idea'),
+})
+
+const UpdateIdeaSchema = z.object({
+  ideaId: z.string().uuid(),
+  title: z.string().trim().min(2).max(280),
+  status: z.enum(['baby_idea', 'guionizar', 'grabacion', 'edicion', 'revision', 'publicado']),
+})
+
+export async function createIdeaForClient(formData: FormData): Promise<ClientActionResult> {
+  await requireRole(['admin', 'editor', 'guionista'])
+
+  const parsed = CreateIdeaSchema.safeParse({
+    clientId: formData.get('clientId'),
+    title: formData.get('title'),
+    status: formData.get('status') || 'baby_idea',
+  })
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? 'Dato inválido.' }
+
+  const supabase = createClient()
+  const { error } = await supabase.from('content_ideas').insert({
+    client_id: parsed.data.clientId,
+    title: parsed.data.title,
+    status: parsed.data.status as ContentStatus,
+  })
+
+  if (error) return { ok: false, error: error.message }
+
+  revalidatePath(`/clientes/${parsed.data.clientId}`)
+  revalidatePath('/hub-edicion')
+  revalidatePath('/kanban')
+  return { ok: true }
+}
+
+export async function updateIdeaForTeam(formData: FormData): Promise<ClientActionResult> {
+  await requireRole(['admin', 'editor', 'guionista'])
+
+  const parsed = UpdateIdeaSchema.safeParse({
+    ideaId: formData.get('ideaId'),
+    title: formData.get('title'),
+    status: formData.get('status'),
+  })
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? 'Dato inválido.' }
+
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('content_ideas')
+    .update({ title: parsed.data.title, status: parsed.data.status as ContentStatus })
+    .eq('id', parsed.data.ideaId)
+
+  if (error) return { ok: false, error: error.message }
+
+  revalidatePath('/clientes', 'layout')
+  revalidatePath('/hub-edicion')
+  revalidatePath('/kanban')
+  return { ok: true }
+}
+
+export async function deleteIdeaForTeam(ideaId: string): Promise<ClientActionResult> {
+  await requireRole(['admin', 'editor', 'guionista'])
+  if (!ideaId) return { ok: false, error: 'ID requerido.' }
+
+  const supabase = createClient()
+  const { error } = await supabase.from('content_ideas').delete().eq('id', ideaId)
+  if (error) return { ok: false, error: error.message }
+
+  revalidatePath('/clientes', 'layout')
+  revalidatePath('/hub-edicion')
+  revalidatePath('/kanban')
+  return { ok: true }
+}
+
+export async function moveIdeaStatusFromProfile(
+  ideaId: string,
+  status: ContentStatus,
+): Promise<ClientActionResult> {
+  await requireRole(['admin', 'editor', 'guionista'])
+  if (!ideaId) return { ok: false, error: 'ID requerido.' }
+
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('content_ideas')
+    .update({ status })
+    .eq('id', ideaId)
+
+  if (error) return { ok: false, error: error.message }
+
+  revalidatePath('/clientes', 'layout')
+  revalidatePath('/hub-edicion')
+  revalidatePath('/kanban')
   return { ok: true }
 }

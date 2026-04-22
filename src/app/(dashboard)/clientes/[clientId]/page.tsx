@@ -156,8 +156,7 @@ export default async function ClientProfilePage({
 
       {/* Ideas y videos */}
       <section className="space-y-3">
-        <h3 className="font-medium">Ideas y videos ({ideaRows.length})</h3>
-        <IdeasList ideas={ideaRows} />
+        <IdeasList clientId={params.clientId} ideas={ideaRows} />
       </section>
     </div>
   )

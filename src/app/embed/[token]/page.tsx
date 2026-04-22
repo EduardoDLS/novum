@@ -42,6 +42,7 @@ export default async function EmbedPage({ params }: { params: { token: string } 
     guionizar: 'border-l-kanban-guionizar',
     grabacion: 'border-l-kanban-grabacion',
     edicion:   'border-l-kanban-edicion',
+    revision:  'border-l-kanban-revision',
     publicado: 'border-l-kanban-publicado',
   }
 
