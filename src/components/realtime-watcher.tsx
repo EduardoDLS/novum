@@ -18,6 +18,9 @@ export function RealtimeWatcher() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'deliveries' }, () => {
         router.refresh()
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'scripts' }, () => {
+        router.refresh()
+      })
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }

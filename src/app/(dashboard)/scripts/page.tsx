@@ -71,8 +71,10 @@ export default async function ScriptsPage() {
         </p>
       )}
 
-      <div className="space-y-6">
-        {[...borradores, ...resto].map((script) => {
+      {borradores.length > 0 && (
+        <div className="space-y-6">
+          <h3 className="text-sm font-medium text-muted-foreground">Pendientes de revisión</h3>
+          {borradores.map((script) => {
           const badge = STATUS_BADGE[script.status] ?? STATUS_BADGE.borrador
           const lines = script.script_content as ScriptLine[] | null
 
@@ -138,9 +140,72 @@ export default async function ScriptsPage() {
                 </div>
               )}
             </section>
-          )
-        })}
-      </div>
+          )})}
+        </div>
+      )}
+
+      {resto.length > 0 && (
+        <details className="group">
+          <summary className="cursor-pointer list-none flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors select-none">
+            <span className="inline-block transition-transform group-open:rotate-90">▶</span>
+            Aprobados y rechazados ({resto.length})
+          </summary>
+          <div className="space-y-6 mt-4">
+            {resto.map((script) => {
+              const badge = STATUS_BADGE[script.status] ?? STATUS_BADGE.borrador
+              const lines = script.script_content as ScriptLine[] | null
+
+              return (
+                <section
+                  key={script.id}
+                  className="rounded-lg border border-border bg-card p-6 shadow-elev-1 space-y-4"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">
+                        {((script.clients as unknown) as { name: string } | null)?.name ?? 'Cliente'} ·{' '}
+                        {new Date(script.created_at).toLocaleDateString('es-MX', {
+                          day: '2-digit', month: 'short', year: 'numeric',
+                        })}
+                      </p>
+                      <h3 className="font-medium text-foreground">{script.raw_idea}</h3>
+                    </div>
+                    <span className={`t-label inline-flex items-center rounded-md px-2 py-0.5 text-[10px] ${badge.className}`}>
+                      {badge.label}
+                    </span>
+                  </div>
+
+                  {script.strategic_vision && (
+                    <details className="group/inner">
+                      <summary className="t-label cursor-pointer text-muted-foreground hover:text-foreground">
+                        Ver visión estratégica
+                      </summary>
+                      <p className="mt-2 text-sm leading-relaxed text-foreground whitespace-pre-wrap">
+                        {script.strategic_vision}
+                      </p>
+                    </details>
+                  )}
+
+                  {(script as { client_notes?: string | null }).client_notes && (
+                    <div className="rounded-md border border-novum-gold/30 bg-novum-gold/5 px-4 py-3 text-sm">
+                      <span className="font-medium text-novum-gold">Notas del cliente: </span>
+                      <span className="text-foreground">{(script as { client_notes?: string | null }).client_notes}</span>
+                    </div>
+                  )}
+
+                  {lines && lines.length > 0 && <ScriptEditor scriptId={script.id} lines={lines} />}
+
+                  {script.rejection_note && (
+                    <div className="rounded-md bg-destructive/5 border border-destructive/20 px-4 py-3 text-sm text-destructive">
+                      <span className="font-medium">Nota de rechazo:</span> {script.rejection_note}
+                    </div>
+                  )}
+                </section>
+              )
+            })}
+          </div>
+        </details>
+      )}
     </div>
   )
 }

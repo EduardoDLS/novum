@@ -1,13 +1,15 @@
 import { DeliveryBadge } from './delivery-badge'
-import type { DeliveryStatus } from '@/types/novum'
+import type { DeliveryStatus, ContentStatus } from '@/types/novum'
 
 type DeliveryWithClient = {
   id: string
   delivery_date: string
   status: DeliveryStatus
   notes: string | null
+  content_idea_id: string | null
   clients: { name: string } | null
-  content_ideas: { title: string } | null
+  content_ideas: { id: string; title: string; status: ContentStatus } | null
+  profiles?: { full_name: string | null } | null
 }
 
 type Props = {

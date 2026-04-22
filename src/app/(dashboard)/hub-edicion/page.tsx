@@ -4,7 +4,6 @@ import { CalendarNav } from '@/components/calendar/calendar-nav'
 import { MonthGrid } from '@/components/calendar/month-grid'
 import { WeekGrid } from '@/components/calendar/week-grid'
 import { CreateDeliveryForm } from './create-delivery-form'
-import { ProductionBoard, type BoardIdea } from './production-board'
 import type { ContentStatus, DeliveryStatus } from '@/types/novum'
 
 export const dynamic = 'force-dynamic'
@@ -46,11 +45,11 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
     dateTo = sunday.toISOString().slice(0, 10)
   }
 
-  const [{ data: deliveries }, { data: clients }, { data: team }, { data: allIdeas }, { data: activeIdeas }] =
+  const [{ data: deliveries }, { data: clients }, { data: team }, { data: allIdeas }] =
     await Promise.all([
       supabase
         .from('deliveries')
-        .select('id, delivery_date, status, notes, clients(name), content_ideas(title), profiles(full_name)')
+        .select('id, delivery_date, status, notes, content_idea_id, clients(name), content_ideas(id, title, status), profiles(full_name)')
         .gte('delivery_date', dateFrom)
         .lte('delivery_date', dateTo)
         .order('delivery_date'),
@@ -65,11 +64,6 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
         .select('id, title, client_id, status')
         .neq('status', 'publicado')
         .order('created_at', { ascending: false }),
-      supabase
-        .from('content_ideas')
-        .select('id, title, status, assigned_to, clients(name)')
-        .in('status', ['guionizar', 'grabacion', 'edicion', 'revision'])
-        .order('created_at', { ascending: false }),
     ])
 
   type DeliveryRow = {
@@ -77,8 +71,9 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
     delivery_date: string
     status: DeliveryStatus
     notes: string | null
+    content_idea_id: string | null
     clients: { name: string } | null
-    content_ideas: { title: string } | null
+    content_ideas: { id: string; title: string; status: ContentStatus } | null
     profiles: { full_name: string | null } | null
   }
 
@@ -87,27 +82,9 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
   const teamList = (team ?? []) as { id: string; full_name: string | null; role: string }[]
   const ideaList = (allIdeas ?? []) as { id: string; title: string; client_id: string; status: string }[]
 
-  type ActiveIdeaRow = { id: string; title: string; status: ContentStatus; assigned_to: string | null; clients: { name: string } | null }
-
-  const MEMBER_COLORS = [
-    '#3b82f6', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6',
-    '#ef4444', '#6366f1', '#eab308', '#22c55e', '#06b6d4',
-  ]
-  const profileMap: Record<string, string> = {}
-  const colorMap: Record<string, string> = {}
-  teamList.forEach((m, i) => {
-    profileMap[m.id] = m.full_name ?? 'Sin nombre'
-    colorMap[m.id] = MEMBER_COLORS[i % MEMBER_COLORS.length]
-  })
-
-  const boardIdeas: BoardIdea[] = ((activeIdeas ?? []) as unknown as ActiveIdeaRow[]).map((i) => ({
-    id: i.id,
-    title: i.title,
-    status: i.status,
-    client_name: i.clients?.name ?? 'Cliente',
-    editor_name: i.assigned_to ? profileMap[i.assigned_to] : null,
-    editor_color: i.assigned_to ? colorMap[i.assigned_to] : null,
-  }))
+  const activeCount = ideaList.filter((i) =>
+    ['guionizar', 'grabacion', 'edicion', 'revision'].includes(i.status)
+  ).length
 
   return (
     <div className="space-y-8">
@@ -115,17 +92,11 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
         <header className="space-y-1">
           <h2 className="t-h1">Hub de Edición</h2>
           <p className="text-sm text-muted-foreground">
-            {boardIdeas.length} video{boardIdeas.length !== 1 ? 's' : ''} en producción activa.
+            {activeCount} video{activeCount !== 1 ? 's' : ''} en producción activa.
           </p>
         </header>
         <CreateDeliveryForm clients={clientList} team={teamList} ideas={ideaList} />
       </div>
-
-      {/* Tablero de producción */}
-      <section className="space-y-3">
-        <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-caps">Tablero de producción</h3>
-        <ProductionBoard ideas={boardIdeas} />
-      </section>
 
       <CalendarNav year={year} month={month} view={view} week={week} />
 

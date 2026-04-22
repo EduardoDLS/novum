@@ -97,14 +97,46 @@ export async function updateDeliveryStatus(
   return { ok: true }
 }
 
+export async function updateDeliveryFull(
+  deliveryId: string,
+  deliveryStatus: DeliveryStatus,
+  ideaId: string | null,
+  ideaStatus: ContentStatus | null,
+): Promise<DeliveryActionResult> {
+  await requireRole(['admin', 'editor', 'guionista'])
+  if (!deliveryId) return { ok: false, error: 'ID requerido.' }
+
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('deliveries')
+    .update({ status: deliveryStatus })
+    .eq('id', deliveryId)
+
+  if (error) return { ok: false, error: error.message }
+
+  if (ideaId && ideaStatus) {
+    await supabase
+      .from('content_ideas')
+      .update({ status: ideaStatus })
+      .eq('id', ideaId)
+  }
+
+  revalidatePath('/hub-edicion')
+  revalidatePath('/kanban')
+  revalidatePath('/clientes', 'layout')
+  return { ok: true }
+}
+
 export async function deleteDelivery(deliveryId: string): Promise<DeliveryActionResult> {
-  await requireRole(['admin'])
+  await requireRole(['admin', 'editor', 'guionista'])
 
   const supabase = createClient()
   const { error } = await supabase.from('deliveries').delete().eq('id', deliveryId)
   if (error) return { ok: false, error: error.message }
 
   revalidatePath('/hub-edicion')
+  revalidatePath('/kanban')
+  revalidatePath('/clientes', 'layout')
   return { ok: true }
 }
 
