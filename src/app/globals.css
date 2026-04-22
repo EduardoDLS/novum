@@ -42,8 +42,8 @@
 @layer base {
   :root {
     /* ── Dark Premium palette ── */
-    --gold:            42 78% 55%;       /* #D4A843 — acento dorado */
-    --gold-dim:        42 50% 38%;
+    --gold:            212 38% 30%;      /* #2F4A68 — azul Novum */
+    --gold-dim:        212 38% 18%;
     --obsidian:        220 16% 7%;       /* #0E1013 — fondo base */
     --obsidian-raised: 220 14% 10%;      /* #151719 — cards */
     --obsidian-elev:   220 12% 13%;      /* #1B1E22 — elementos elevados */
@@ -63,7 +63,7 @@
     --popover-foreground:   var(--warm-white);
 
     --primary:              var(--gold);
-    --primary-foreground:   220 16% 7%;
+    --primary-foreground:   40 20% 94%;
 
     --secondary:            var(--obsidian-elev);
     --secondary-foreground: var(--warm-white);

@@ -56,8 +56,8 @@ const config: Config = {
           'dark-raised': '#151719',
           'dark-elevated': '#1B1E22',
           'dark-border': '#272B31',
-          gold: '#D4A843',
-          'gold-dim': '#8B6E2C',
+          gold: '#2F4A68',
+          'gold-dim': '#1A2E45',
         },
         kanban: {
           'baby-idea': 'hsl(var(--kanban-baby-idea))',
@@ -105,7 +105,7 @@ const config: Config = {
         'elev-1': '0 1px 4px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.03)',
         'elev-2': '0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)',
         'elev-3': '0 12px 40px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.05)',
-        'gold':   '0 0 20px rgba(212,168,67,0.15)',
+        'gold':   '0 0 20px rgba(47,74,104,0.15)',
       },
       transitionDuration: {
         fast: '100ms',
