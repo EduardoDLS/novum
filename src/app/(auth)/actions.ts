@@ -13,6 +13,7 @@ const credentialsSchema = z.object({
 
 const registerSchema = credentialsSchema.extend({
   full_name: z.string().min(2, 'Ingresa tu nombre completo'),
+  role: z.enum(['cliente', 'editor', 'guionista', 'admin']),
 })
 
 export type FormState = { error?: string } | undefined
@@ -54,6 +55,7 @@ export async function registerAction(
     email: formData.get('email'),
     password: formData.get('password'),
     full_name: formData.get('full_name'),
+    role: formData.get('role'),
   })
 
   if (!parsed.success) {
@@ -67,7 +69,7 @@ export async function registerAction(
     options: {
       data: {
         full_name: parsed.data.full_name,
-        role: 'cliente' satisfies UserRole,
+        role: parsed.data.role as UserRole,
       },
     },
   })
@@ -75,7 +77,7 @@ export async function registerAction(
   if (error) return { error: error.message }
 
   revalidatePath('/', 'layout')
-  redirect('/kanban')
+  redirect('/login?registered=1')
 }
 
 export async function logoutAction() {

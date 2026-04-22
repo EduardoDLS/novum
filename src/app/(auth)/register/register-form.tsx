@@ -49,6 +49,22 @@ export function RegisterForm() {
           required
         />
       </div>
+      <div className="space-y-2">
+        <Label htmlFor="role">Rol</Label>
+        <select
+          id="role"
+          name="role"
+          required
+          defaultValue=""
+          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+        >
+          <option value="" disabled>Selecciona tu rol…</option>
+          <option value="cliente">Cliente</option>
+          <option value="editor">Editor</option>
+          <option value="guionista">Guionista</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
       {state?.error && (
         <p className="text-sm text-destructive" role="alert">
           {state.error}

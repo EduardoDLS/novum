@@ -11,7 +11,7 @@ import { LoginForm } from './login-form'
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: { next?: string }
+  searchParams: { next?: string; registered?: string }
 }) {
   return (
     <Card className="shadow-elev-1">
@@ -22,9 +22,14 @@ export default function LoginPage({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {searchParams.registered && (
+          <div className="rounded-md border border-kanban-grabacion/30 bg-kanban-grabacion/10 px-4 py-3 text-sm text-kanban-grabacion text-center">
+            Cuenta creada. Revisa tu email para verificar tu cuenta antes de iniciar sesión.
+          </div>
+        )}
         <LoginForm next={searchParams.next ?? ''} />
         <p className="text-center text-sm text-muted-foreground">
-          ¿Eres cliente nuevo?{' '}
+          ¿No tienes cuenta?{' '}
           <Link href="/register" className="text-foreground underline underline-offset-4">
             Crear cuenta
           </Link>
