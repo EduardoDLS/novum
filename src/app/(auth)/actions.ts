@@ -64,17 +64,28 @@ export async function registerAction(
   }
 
   const admin = createServiceClient()
-  const { error } = await admin.auth.admin.createUser({
-    email: parsed.data.email,
-    password: parsed.data.password,
-    email_confirm: true,
-    user_metadata: {
-      full_name: parsed.data.full_name,
-      role: parsed.data.role as UserRole,
-    },
-  })
+  let createError: string | null = null
+  try {
+    const { error } = await admin.auth.admin.createUser({
+      email: parsed.data.email,
+      password: parsed.data.password,
+      email_confirm: true,
+      user_metadata: {
+        full_name: parsed.data.full_name,
+        role: parsed.data.role as UserRole,
+      },
+    })
+    if (error) createError = error.message
+  } catch (e) {
+    createError = e instanceof Error ? e.message : 'Error al crear la cuenta'
+  }
 
-  if (error) return { error: error.message }
+  if (createError) {
+    if (createError.toLowerCase().includes('already')) {
+      return { error: 'Ya existe una cuenta con ese email.' }
+    }
+    return { error: createError }
+  }
 
   revalidatePath('/', 'layout')
   redirect('/login?registered=1')

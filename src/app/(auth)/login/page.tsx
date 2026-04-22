@@ -24,7 +24,7 @@ export default function LoginPage({
       <CardContent className="space-y-6">
         {searchParams.registered && (
           <div className="rounded-md border border-kanban-grabacion/30 bg-kanban-grabacion/10 px-4 py-3 text-sm text-kanban-grabacion text-center">
-            Cuenta creada. Revisa tu email para verificar tu cuenta antes de iniciar sesión.
+            Cuenta creada. Ya puedes iniciar sesión.
           </div>
         )}
         <LoginForm next={searchParams.next ?? ''} />
