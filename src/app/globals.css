@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ───────────── FONTS ───────────── */
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('/fonts/century-gothic-light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('/fonts/century-gothic-regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('/fonts/century-gothic-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('/fonts/century-gothic-black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Arlon';
+  src: url('/fonts/arlon-black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    /* ── Dark Premium palette ── */
+    --gold:            42 78% 55%;       /* #D4A843 — acento dorado */
+    --gold-dim:        42 50% 38%;
+    --obsidian:        220 16% 7%;       /* #0E1013 — fondo base */
+    --obsidian-raised: 220 14% 10%;      /* #151719 — cards */
+    --obsidian-elev:   220 12% 13%;      /* #1B1E22 — elementos elevados */
+    --obsidian-border: 220 10% 18%;      /* #272B31 — bordes */
+    --warm-white:      40 20% 94%;       /* #F2EFE8 — texto principal */
+    --cool-gray:       220 8% 55%;       /* #848A92 — texto secundario */
+    --cool-gray-dim:   220 6% 38%;       /* #5C6068 — texto terciario */
+
+    /* ── shadcn semantic mapping (dark por defecto) ── */
+    --background:           var(--obsidian);
+    --foreground:           var(--warm-white);
+
+    --card:                 var(--obsidian-raised);
+    --card-foreground:      var(--warm-white);
+
+    --popover:              var(--obsidian-elev);
+    --popover-foreground:   var(--warm-white);
+
+    --primary:              var(--gold);
+    --primary-foreground:   220 16% 7%;
+
+    --secondary:            var(--obsidian-elev);
+    --secondary-foreground: var(--warm-white);
+
+    --muted:                var(--obsidian-elev);
+    --muted-foreground:     var(--cool-gray);
+
+    --accent:               var(--obsidian-elev);
+    --accent-foreground:    var(--warm-white);
+
+    --destructive:          6 60% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border:               var(--obsidian-border);
+    --input:                var(--obsidian-border);
+    --ring:                 var(--gold);
+
+    --radius: 6px;
+
+    /* ── Kanban stage tokens ── */
+    --kanban-baby-idea:     45 85% 62%;
+    --kanban-baby-idea-bg:  45 40% 14%;
+    --kanban-guionizar:     22 75% 62%;
+    --kanban-guionizar-bg:  22 40% 13%;
+    --kanban-grabacion:     152 45% 52%;
+    --kanban-grabacion-bg:  152 30% 12%;
+    --kanban-edicion:       210 60% 60%;
+    --kanban-edicion-bg:    210 35% 13%;
+    --kanban-publicado:     270 50% 65%;
+    --kanban-publicado-bg:  270 30% 13%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html {
+    font-family: 'Century Gothic', AppleGothic, 'Trebuchet MS', sans-serif;
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+  /* Scrollbar dark */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--obsidian-border)); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--cool-gray-dim)); }
+  /* Inputs y selects dark */
+  input, select, textarea {
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  .t-display {
+    font-family: 'Arlon', 'Century Gothic', sans-serif;
+    font-weight: 900;
+    font-size: 48px;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+  .t-h1 {
+    font-family: 'Arlon', 'Century Gothic', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: hsl(var(--warm-white));
+  }
+  .t-label {
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .t-metric {
+    font-family: 'Arlon', 'Century Gothic', sans-serif;
+    font-weight: 900;
+    font-size: 40px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: hsl(var(--warm-white));
+  }
+  /* Acento dorado para highlights */
+  .text-gold { color: hsl(var(--gold)); }
+  .border-gold { border-color: hsl(var(--gold)); }
+  .bg-gold { background-color: hsl(var(--gold)); }
+}

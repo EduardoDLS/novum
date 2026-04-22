@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Arlon'; src: url('../fonts/ARLON BLACK.ttf'); font-weight: 900; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Century Gothic', sans-serif; background: #F5F5F2; padding: 24px; }
+  .section-label { font-family: 'Arlon', sans-serif; font-weight: 900; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7278; margin-bottom: 10px; }
+  .row { display: flex; gap: 8px; margin-bottom: 8px; align-items: stretch; }
+  .chip { border-radius: 6px; padding: 10px 14px; font-size: 12px; font-weight: 700; min-width: 110px; }
+  .chip-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; margin-bottom: 2px; }
+  .chip-hex { font-family: monospace; font-size: 10px; opacity: 0.6; margin-top: 2px; }
+</style>
+</head>
+<body>
+  <div class="section-label">Semantic Colors</div>
+  <div class="row">
+    <div class="chip" style="background:#2F4A68;color:#F5F5F2;">
+      <div class="chip-label">Primary / CTA</div>
+      Steel Blue
+      <div class="chip-hex">#2F4A68</div>
+    </div>
+    <div class="chip" style="background:#243a54;color:#F5F5F2;">
+      <div class="chip-label">Primary Hover</div>
+      Steel Blue Dark
+      <div class="chip-hex">#243a54</div>
+    </div>
+    <div class="chip" style="background:#27AE60;color:#fff;">
+      <div class="chip-label">Success</div>
+      Approve
+      <div class="chip-hex">#27AE60</div>
+    </div>
+    <div class="chip" style="background:#C0392B;color:#fff;">
+      <div class="chip-label">Danger</div>
+      Reject
+      <div class="chip-hex">#C0392B</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="chip" style="background:#F5F5F2;color:#121417;border:1px solid #D0D3D8;">
+      <div class="chip-label">FG Primary</div>
+      Charcoal Black
+      <div class="chip-hex">#121417</div>
+    </div>
+    <div class="chip" style="background:#F5F5F2;color:#6E7278;border:1px solid #D0D3D8;">
+      <div class="chip-label">FG Secondary</div>
+      Graphite Gray
+      <div class="chip-hex">#6E7278</div>
+    </div>
+    <div class="chip" style="background:#121417;color:#F5F5F2;">
+      <div class="chip-label">FG Inverse</div>
+      Warm White
+      <div class="chip-hex">#F5F5F2</div>
+    </div>
+    <div class="chip" style="background:#D0D3D8;color:#121417;">
+      <div class="chip-label">Border</div>
+      Cold Silver
+      <div class="chip-hex">#D0D3D8</div>
+    </div>
+  </div>
+</body>
+</html>

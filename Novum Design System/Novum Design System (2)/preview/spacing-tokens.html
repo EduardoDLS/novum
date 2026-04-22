@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Arlon'; src: url('../fonts/ARLON BLACK.ttf'); font-weight: 900; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Century Gothic', sans-serif; background: #F5F5F2; padding: 24px; }
+  .section-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7278; font-weight: 700; margin-bottom: 12px; }
+  .space-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .space-bar { background: #2F4A68; border-radius: 2px; height: 16px; }
+  .space-label { font-size: 11px; color: #6E7278; min-width: 60px; font-family: monospace; }
+  .space-px { font-size: 11px; color: #A8ADB3; }
+  .radius-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .radius-box { width: 56px; height: 40px; background: #D0D3D8; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; }
+  .radius-label { font-size: 10px; color: #6E7278; text-align: center; }
+  .radius-val { font-size: 10px; color: #A8ADB3; font-family: monospace; }
+</style>
+</head>
+<body>
+  <div class="section-label">Spacing Scale</div>
+  <div>
+    <div class="space-row"><div class="space-label">space-1</div><div class="space-bar" style="width:4px;"></div><div class="space-px">4px</div></div>
+    <div class="space-row"><div class="space-label">space-2</div><div class="space-bar" style="width:8px;"></div><div class="space-px">8px</div></div>
+    <div class="space-row"><div class="space-label">space-3</div><div class="space-bar" style="width:12px;"></div><div class="space-px">12px</div></div>
+    <div class="space-row"><div class="space-label">space-4</div><div class="space-bar" style="width:16px;"></div><div class="space-px">16px</div></div>
+    <div class="space-row"><div class="space-label">space-6</div><div class="space-bar" style="width:24px;"></div><div class="space-px">24px</div></div>
+    <div class="space-row"><div class="space-label">space-8</div><div class="space-bar" style="width:32px;"></div><div class="space-px">32px</div></div>
+    <div class="space-row"><div class="space-label">space-12</div><div class="space-bar" style="width:48px;"></div><div class="space-px">48px</div></div>
+    <div class="space-row"><div class="space-label">space-16</div><div class="space-bar" style="width:64px;"></div><div class="space-px">64px</div></div>
+  </div>
+
+  <div class="section-label" style="margin-top:20px;">Border Radius</div>
+  <div class="radius-row">
+    <div><div class="radius-box" style="border-radius:4px;"></div><div class="radius-label">sm</div><div class="radius-val">4px</div></div>
+    <div><div class="radius-box" style="border-radius:6px;"></div><div class="radius-label">md</div><div class="radius-val">6px</div></div>
+    <div><div class="radius-box" style="border-radius:8px;"></div><div class="radius-label">lg</div><div class="radius-val">8px</div></div>
+    <div><div class="radius-box" style="border-radius:12px;"></div><div class="radius-label">xl</div><div class="radius-val">12px</div></div>
+  </div>
+</body>
+</html>

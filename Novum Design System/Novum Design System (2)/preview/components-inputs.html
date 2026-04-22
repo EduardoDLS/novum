@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Century Gothic', sans-serif; background: #F5F5F2; padding: 24px; }
+  .section-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7278; font-weight: 700; margin-bottom: 10px; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 12px; font-weight: 700; color: #121417; margin-bottom: 6px; }
+  .field input, .field textarea, .field select {
+    font-family: 'Century Gothic', sans-serif;
+    font-size: 13px;
+    color: #121417;
+    background: #fff;
+    border: 1px solid #D0D3D8;
+    border-radius: 6px;
+    padding: 8px 12px;
+    width: 100%;
+    outline: none;
+    transition: border-color 150ms ease;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: #2F4A68;
+    box-shadow: 0 0 0 3px rgba(47,74,104,0.12);
+  }
+  .field input::placeholder, .field textarea::placeholder { color: #A8ADB3; }
+  .field textarea { resize: vertical; min-height: 72px; }
+  .field-hint { font-size: 11px; color: #6E7278; margin-top: 4px; }
+  .field-error input { border-color: #C0392B; }
+  .field-error .error-msg { font-size: 11px; color: #C0392B; margin-top: 4px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+</style>
+</head>
+<body>
+  <div class="form-row">
+    <div>
+      <div class="section-label">Text Input</div>
+      <div class="field">
+        <label>Título de la idea</label>
+        <input type="text" placeholder="Ej: Video de marca personal">
+        <div class="field-hint">Nombre del video o concepto.</div>
+      </div>
+      <div class="field field-error">
+        <label>Fecha de entrega</label>
+        <input type="date" value="">
+        <div class="error-msg">Este campo es requerido.</div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Textarea & Select</div>
+      <div class="field">
+        <label>Descripción</label>
+        <textarea placeholder="Describe la idea brevemente..."></textarea>
+      </div>
+      <div class="field">
+        <label>Editor asignado</label>
+        <select>
+          <option value="" disabled selected>Seleccionar editor</option>
+          <option>Juan Rodríguez</option>
+          <option>Ana Martínez</option>
+          <option>Carlos López</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

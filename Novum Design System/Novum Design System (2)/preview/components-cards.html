@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Arlon'; src: url('../fonts/ARLON BLACK.ttf'); font-weight: 900; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Century Gothic', sans-serif; background: #F5F5F2; padding: 24px; }
+  .section-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7278; font-weight: 700; margin-bottom: 12px; }
+  .cards-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; align-items: flex-start; }
+  /* Kanban card */
+  .kanban-card { background: #fff; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 12px 14px; width: 180px; border-top: 3px solid #5B9BD5; }
+  .kanban-card-title { font-weight: 700; font-size: 13px; color: #121417; margin-bottom: 6px; }
+  .kanban-card-meta { font-size: 11px; color: #6E7278; margin-bottom: 8px; }
+  .kanban-card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+  .avatar { width: 24px; height: 24px; border-radius: 50%; background: #2F4A68; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff; font-weight: 700; }
+  /* Metric card */
+  .metric-card { background: #fff; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 16px 18px; width: 140px; }
+  .metric-num { font-family: 'Arlon', sans-serif; font-weight: 900; font-size: 42px; color: #121417; line-height: 1; letter-spacing: -0.02em; }
+  .metric-label { font-size: 11px; color: #6E7278; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+  /* Resource card */
+  .resource-card { background: #fff; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); width: 160px; overflow: hidden; }
+  .resource-thumb { height: 80px; background: #22262B; display: flex; align-items: center; justify-content: center; }
+  .resource-body { padding: 10px 12px; }
+  .resource-name { font-weight: 700; font-size: 12px; color: #121417; }
+  .resource-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .tag { background: #F0F1F2; color: #6E7278; font-size: 10px; padding: 1px 6px; border-radius: 3px; }
+  /* Profile card */
+  .profile-card { background: #fff; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 14px; width: 160px; text-align: center; }
+  .profile-avatar { width: 48px; height: 48px; border-radius: 50%; background: #D0D3D8; margin: 0 auto 8px; }
+  .profile-name { font-weight: 700; font-size: 12px; color: #121417; }
+  .profile-handle { font-size: 11px; color: #6E7278; }
+  .profile-niche { font-size: 10px; color: #2F4A68; margin-top: 4px; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div class="section-label">Kanban Card</div>
+  <div class="cards-row">
+    <div class="kanban-card">
+      <div class="kanban-card-title">Video de marca personal</div>
+      <div class="kanban-card-meta">Entrega: 28 abr 2025</div>
+      <div class="kanban-card-footer">
+        <span class="badge" style="background:#EBF4FC;color:#2560A0;">Edición</span>
+        <div class="avatar">JR</div>
+      </div>
+    </div>
+    <div class="kanban-card" style="border-top-color:#52B788;">
+      <div class="kanban-card-title">Reels para lanzamiento</div>
+      <div class="kanban-card-meta">Entrega: 15 may 2025</div>
+      <div class="kanban-card-footer">
+        <span class="badge" style="background:#EAFAF3;color:#267A50;">Grabación</span>
+        <div class="avatar" style="background:#52B788;">AM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Metric Card</div>
+  <div class="cards-row">
+    <div class="metric-card">
+      <div class="metric-num">24</div>
+      <div class="metric-label">Videos publicados</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num" style="color:#2F4A68;">1.2M</div>
+      <div class="metric-label">Seguidores</div>
+    </div>
+  </div>
+
+  <div class="section-label">Resource + Profile Cards</div>
+  <div class="cards-row">
+    <div class="resource-card">
+      <div class="resource-thumb">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6E7278" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      </div>
+      <div class="resource-body">
+        <div class="resource-name">Plantilla Reels</div>
+        <div class="resource-tags">
+          <span class="tag">Video</span>
+          <span class="tag">Template</span>
+        </div>
+      </div>
+    </div>
+    <div class="profile-card">
+      <div class="profile-avatar"></div>
+      <div class="profile-name">María González</div>
+      <div class="profile-handle">@mariag</div>
+      <div class="profile-niche">Lifestyle · Fitness</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Novum — Dashboard Interno</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  @font-face { font-family: 'CenturyGothic'; src: url('../../fonts/CENTURY GOTHIC_DELGADA.ttf'); font-weight: 300; }
+  @font-face { font-family: 'CenturyGothic'; src: url('../../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'CenturyGothic'; src: url('../../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Arlon'; src: url('../../fonts/ARLON BLACK.ttf'); font-weight: 900; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #root { height: 100%; }
+  body { font-family: 'CenturyGothic', 'Century Gothic', AppleGothic, sans-serif; background: #F5F5F2; color: #121417; -webkit-font-smoothing: antialiased; }
+  ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #2A2E33; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const T = {
+  charcoal:'#121417', raised:'#1C1F23', elevated:'#22262B', surfaceBorder:'#2A2E33',
+  warmWhite:'#F5F5F2', white:'#FFFFFF', graphite:'#6E7278', steelBlue:'#2F4A68',
+  coldSilver:'#D0D3D8', border:'#D0D3D8',
+  kanban: {
+    'Baby Idea':  { color:'#F5C842', bg:'#FEF9E7', bgDark:'rgba(245,200,66,0.15)', text:'#9A7800', textDark:'#F5C842' },
+    'Guionizar':  { color:'#E8845C', bg:'#FDF0E9', bgDark:'rgba(232,132,92,0.15)', text:'#B5552A', textDark:'#E8845C' },
+    'Grabación':  { color:'#52B788', bg:'#EAFAF3', bgDark:'rgba(82,183,136,0.15)', text:'#267A50', textDark:'#52B788' },
+    'Edición':    { color:'#5B9BD5', bg:'#EBF4FC', bgDark:'rgba(91,155,213,0.15)', text:'#2560A0', textDark:'#5B9BD5' },
+    'Publicado':  { color:'#9B72CF', bg:'#F4EEFB', bgDark:'rgba(155,114,207,0.15)', text:'#6234A0', textDark:'#9B72CF' },
+  }
+};
+
+// ─── Sample data ──────────────────────────────────────────
+const DELIVERIES = [
+  { id:1, client:'María González', title:'Reel de marca personal', editor:'AM', date:'25 abr', stage:'Edición' },
+  { id:2, client:'Carlos Mendoza', title:'Lanzamiento nueva colección', editor:'JR', date:'27 abr', stage:'Edición' },
+  { id:3, client:'Laura Pérez', title:'Día en mi vida emprendedor', editor:'CL', date:'28 abr', stage:'Grabación' },
+  { id:4, client:'María González', title:'Behind the scenes estudio', editor:'AM', date:'05 may', stage:'Guionizar' },
+  { id:5, client:'Roberto Silva', title:'Top 5 errores al iniciar', editor:'JR', date:'08 may', stage:'Baby Idea' },
+  { id:6, client:'Sofía Torres', title:'Video testimonial clientes', editor:'CL', date:'12 may', stage:'Guionizar' },
+];
+
+const SCRIPTS_QUEUE = [
+  { id:1, client:'María González', title:'Behind the scenes estudio', generated:'18 abr 2025', hook:'¿Sabías que el 80% de los emprendedores fallan por no saber comunicar su valor? Hoy te voy a mostrar...' },
+  { id:2, client:'Sofía Torres', title:'Video testimonial clientes', generated:'17 abr 2025', hook:'Tres años atrás yo era exactamente como tú: con el producto correcto pero sin la voz para venderlo...' },
+  { id:3, client:'Carlos Mendoza', title:'Mi estrategia de contenido 2025', generated:'15 abr 2025', hook:'Este año voy a ser completamente honesto sobre lo que sí funciona y lo que no en contenido...' },
+];
+
+const CLIENT_METRICS = {
+  name: 'María González',
+  handle: '@mariagonzalez',
+  niche: 'Emprendimiento · Lifestyle',
+  videosPublicados: 24,
+  seguidores: 45200,
+  topVideos: [
+    { rank:1, title:'Mi historia de marca', views:'128K', thumb:'#E8845C' },
+    { rank:2, title:'Tips de posicionamiento', views:'89K', thumb:'#52B788' },
+    { rank:3, title:'Cómo construí mi marca', views:'71K', thumb:'#9B72CF' },
+  ],
+  formats: [
+    { label:'Reels cortos', pct:60 },
+    { label:'Vlogs', pct:25 },
+    { label:'Tutoriales', pct:15 },
+  ],
+  pillars: [
+    { label:'Emprendimiento', pct:40 },
+    { label:'Vida diaria', pct:30 },
+    { label:'Marca personal', pct:20 },
+    { label:'Networking', pct:10 },
+  ],
+};
+
+const RECURSOS = [
+  { id:1, name:'Plantilla Reels 9:16', tags:['Video','Template'], color:'#2F4A68' },
+  { id:2, name:'Pack de música libre', tags:['Audio','Licencia'], color:'#52B788' },
+  { id:3, name:'Guía de encuadres', tags:['PDF','Técnico'], color:'#E8845C' },
+  { id:4, name:'Preset de color Novum', tags:['Color','LUT'], color:'#9B72CF' },
+  { id:5, name:'Checklist producción', tags:['PDF','Proceso'], color:'#5B9BD5' },
+  { id:6, name:'Brief creativo v3', tags:['Documento'], color:'#F5C842' },
+];
+
+const CLIENTES_LIST = [
+  { id:1, name:'María González', handle:'@mariagonzalez', niche:'Emprendimiento · Lifestyle', videos:24 },
+  { id:2, name:'Carlos Mendoza', handle:'@carlosmendoza', niche:'Fitness · Bienestar', videos:18 },
+  { id:3, name:'Laura Pérez', handle:'@lauraperez_mx', niche:'Moda · Estilo personal', videos:12 },
+  { id:4, name:'Roberto Silva', handle:'@robertosilva', niche:'Finanzas personales', videos:9 },
+  { id:5, name:'Sofía Torres', handle:'@sofia.torres', niche:'Gastronomía', videos:15 },
+  { id:6, name:'Andrés Vega', handle:'@andresvega', niche:'Tech · Startups', videos:7 },
+];
+
+// ─── Small components ─────────────────────────────────────
+function Badge({ stage, dark }) {
+  const s = T.kanban[stage];
+  if (!s) return <span style={{ fontSize:10, color:T.graphite }}>{stage}</span>;
+  return (
+    <span style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'2px 8px', borderRadius:4, background: dark ? s.bgDark : s.bg, color: dark ? s.textDark : s.text, fontSize:10, fontWeight:700, letterSpacing:'0.05em', textTransform:'uppercase', whiteSpace:'nowrap' }}>
+      <span style={{ width:5, height:5, borderRadius:'50%', background:s.color }}></span>
+      {stage}
+    </span>
+  );
+}
+
+function Avatar({ initials }) {
+  const colors = { AM:'#E8845C', JR:'#5B9BD5', CL:'#52B788' };
+  return <div style={{ width:26, height:26, borderRadius:'50%', background:colors[initials]||T.steelBlue, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:700, color:'#fff', flexShrink:0 }}>{initials}</div>;
+}
+
+function SectionTitle({ children }) {
+  return <h2 style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:22, letterSpacing:'-0.01em', color:T.charcoal, marginBottom:6 }}>{children}</h2>;
+}
+
+function SubLabel({ children }) {
+  return <p style={{ fontSize:13, color:T.graphite, marginBottom:24 }}>{children}</p>;
+}
+
+// ─── Views ────────────────────────────────────────────────
+function HubEdicion() {
+  const [calView, setCalView] = useState('semana');
+  const weekDays = ['Lun 14','Mar 15','Mié 16','Jue 17','Vie 18','Sáb 19','Dom 20'];
+  const byDay = { 'Lun 14':[DELIVERIES[0]], 'Mié 16':[DELIVERIES[1]], 'Jue 17':[DELIVERIES[2]], 'Vie 18':[DELIVERIES[3]], 'Sáb 19':[], 'Dom 20':[] };
+
+  return (
+    <div>
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:24 }}>
+        <div>
+          <SectionTitle>Hub de Edición</SectionTitle>
+          <SubLabel>Calendario global de entregas del equipo.</SubLabel>
+        </div>
+        <div style={{ display:'flex', gap:1, background:T.border, borderRadius:7, padding:1 }}>
+          {['semana','mes'].map(v => (
+            <button key={v} onClick={() => setCalView(v)} style={{ fontFamily:'inherit', fontSize:12, fontWeight:700, padding:'6px 16px', borderRadius:6, border:'none', cursor:'pointer', background: calView===v ? T.white : 'transparent', color: calView===v ? T.charcoal : T.graphite, transition:'all 150ms', boxShadow: calView===v ? '0 1px 3px rgba(0,0,0,0.08)' : 'none' }}>
+              {v === 'semana' ? 'Semana' : 'Mes'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div style={{ display:'flex', gap:8, marginBottom:20 }}>
+        {['Todos los editores','Todos los clientes','Todos los estados'].map(f => (
+          <select key={f} style={{ fontFamily:'inherit', fontSize:12, color:T.graphite, background:T.white, border:`1px solid ${T.border}`, borderRadius:6, padding:'6px 10px', cursor:'pointer' }}>
+            <option>{f}</option>
+          </select>
+        ))}
+      </div>
+
+      {calView === 'semana' ? (
+        <div style={{ background:T.white, borderRadius:8, border:`1px solid ${T.border}`, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', background:T.charcoal }}>
+            {weekDays.map(d => <div key={d} style={{ padding:'10px 12px', fontSize:11, fontWeight:700, letterSpacing:'0.07em', color:T.coldSilver, textTransform:'uppercase' }}>{d}</div>)}
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', minHeight:200 }}>
+            {weekDays.map((d,i) => (
+              <div key={d} style={{ padding:8, borderTop:`1px solid ${T.border}`, borderLeft: i>0 ? `1px solid ${T.border}` : 'none', minHeight:180 }}>
+                {(byDay[d]||[]).map(ev => (
+                  <div key={ev.id} style={{ background:T.kanban[ev.stage]?.bg, borderLeft:`3px solid ${T.kanban[ev.stage]?.color}`, borderRadius:4, padding:'7px 8px', marginBottom:6 }}>
+                    <div style={{ fontSize:10, fontWeight:700, color:T.kanban[ev.stage]?.text, marginBottom:3 }}>{ev.client}</div>
+                    <div style={{ fontSize:11, color:T.charcoal, lineHeight:1.3, marginBottom:5 }}>{ev.title}</div>
+                    <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                      <Avatar initials={ev.editor} />
+                      <Badge stage={ev.stage} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div style={{ background:T.white, borderRadius:8, border:`1px solid ${T.border}`, padding:24, boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
+          <p style={{ color:T.graphite, fontSize:13 }}>Vista mensual — Mayo 2025</p>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', gap:1, marginTop:16 }}>
+            {Array.from({length:35},(_, i)=>{
+              const day = i - 2;
+              const ev = DELIVERIES.find(d => [2,4,5,7,8,11].includes(day));
+              return (
+                <div key={i} style={{ minHeight:60, padding:6, background: day<1||day>31 ? '#F9F9F7' : T.white, border:`1px solid ${T.border}`, borderRadius:3 }}>
+                  {day>0&&day<=31&&<div style={{ fontSize:11, color:T.graphite }}>{day}</div>}
+                  {ev&&day>0&&<div style={{ marginTop:3, background:T.kanban[ev.stage]?.bg, borderRadius:3, padding:'2px 4px', fontSize:9, fontWeight:700, color:T.kanban[ev.stage]?.text }}>{ev.client.split(' ')[0]}</div>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ColaGuiones({ setView }) {
+  const [scripts, setScripts] = useState(SCRIPTS_QUEUE.map(s => ({...s, status:null})));
+  const approve = id => setScripts(prev => prev.map(s => s.id===id ? {...s,status:'aprobado'} : s));
+  const reject  = id => setScripts(prev => prev.map(s => s.id===id ? {...s,status:'rechazado'} : s));
+
+  return (
+    <div>
+      <SectionTitle>Cola de Guiones</SectionTitle>
+      <SubLabel>Guiones pendientes de revisión del equipo.</SubLabel>
+      <div style={{ background:T.white, borderRadius:8, border:`1px solid ${T.border}`, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'180px 1fr 130px 1fr 200px', background:T.charcoal }}>
+          {['Cliente','Título','Generado','Preview del hook','Acciones'].map(h => (
+            <div key={h} style={{ padding:'11px 16px', fontSize:10, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:T.coldSilver }}>{h}</div>
+          ))}
+        </div>
+        {scripts.map((s,i) => (
+          <div key={s.id} style={{ display:'grid', gridTemplateColumns:'180px 1fr 130px 1fr 200px', borderTop:`1px solid ${T.border}`, background: s.status==='aprobado' ? '#F0FBF4' : s.status==='rechazado' ? '#FEF0EF' : i%2===0 ? T.white : '#FAFAF8', transition:'background 200ms' }}>
+            <div style={{ padding:'14px 16px', fontWeight:700, fontSize:13, color:T.charcoal, display:'flex', alignItems:'center' }}>{s.client}</div>
+            <div style={{ padding:'14px 16px', fontSize:13, color:T.charcoal, display:'flex', alignItems:'center' }}>{s.title}</div>
+            <div style={{ padding:'14px 16px', fontSize:12, color:T.graphite, display:'flex', alignItems:'center' }}>{s.generated}</div>
+            <div style={{ padding:'14px 16px', fontSize:12, color:T.graphite, lineHeight:1.45, display:'flex', alignItems:'center' }}>{s.hook}</div>
+            <div style={{ padding:'12px 16px', display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
+              {s.status ? (
+                <span style={{ fontSize:11, fontWeight:700, color: s.status==='aprobado' ? '#27AE60' : '#C0392B', letterSpacing:'0.05em', textTransform:'uppercase' }}>● {s.status}</span>
+              ) : (
+                <>
+                  <button onClick={() => approve(s.id)} style={{ fontFamily:'inherit', fontSize:11, fontWeight:700, background:'#27AE60', border:'none', borderRadius:5, padding:'6px 12px', color:'#fff', cursor:'pointer' }}>Aprobar</button>
+                  <button onClick={() => reject(s.id)}  style={{ fontFamily:'inherit', fontSize:11, fontWeight:700, background:'#C0392B', border:'none', borderRadius:5, padding:'6px 12px', color:'#fff', cursor:'pointer' }}>Rechazar</button>
+                  <button style={{ fontFamily:'inherit', fontSize:11, fontWeight:700, background:'transparent', border:`1px solid ${T.border}`, borderRadius:5, padding:'6px 10px', color:T.graphite, cursor:'pointer' }}>Ver</button>
+                </>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PerfilCliente({ setView }) {
+  const m = CLIENT_METRICS;
+  return (
+    <div>
+      <button onClick={() => setView('clientes')} style={{ fontFamily:'inherit', fontSize:12, fontWeight:700, background:'transparent', border:`1px solid ${T.border}`, borderRadius:6, padding:'6px 14px', color:T.graphite, cursor:'pointer', marginBottom:24 }}>← Clientes</button>
+      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
+        <div style={{ width:52, height:52, borderRadius:'50%', background:T.coldSilver }}></div>
+        <div>
+          <h1 style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:22, color:T.charcoal }}>{m.name}</h1>
+          <div style={{ fontSize:13, color:T.graphite }}>{m.handle} · {m.niche}</div>
+        </div>
+      </div>
+
+      {/* Metrics row */}
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16, marginBottom:24 }}>
+        {[
+          { num: m.videosPublicados, label:'Videos publicados' },
+          { num: (m.seguidores/1000).toFixed(1)+'K', label:'Seguidores' },
+          { num: '3.2%', label:'Engagement avg' },
+          { num: '71K', label:'Mejor video (views)' },
+        ].map(card => (
+          <div key={card.label} style={{ background:T.white, borderRadius:8, padding:'18px 20px', boxShadow:'0 1px 3px rgba(0,0,0,0.06)', border:`1px solid ${T.border}` }}>
+            <div style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:38, color:T.charcoal, lineHeight:1, letterSpacing:'-0.02em' }}>{card.num}</div>
+            <div style={{ fontSize:11, fontWeight:700, letterSpacing:'0.07em', textTransform:'uppercase', color:T.graphite, marginTop:6 }}>{card.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:24 }}>
+        {/* Formats */}
+        <div style={{ background:T.white, borderRadius:8, padding:'18px 20px', boxShadow:'0 1px 3px rgba(0,0,0,0.06)', border:`1px solid ${T.border}` }}>
+          <div style={{ fontSize:12, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color:T.graphite, marginBottom:14 }}>Formatos que funcionan</div>
+          {m.formats.map(f => (
+            <div key={f.label} style={{ marginBottom:10 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
+                <span style={{ fontSize:12, color:T.charcoal }}>{f.label}</span>
+                <span style={{ fontSize:12, fontWeight:700, color:T.steelBlue }}>{f.pct}%</span>
+              </div>
+              <div style={{ height:5, background:'#F0F1F2', borderRadius:3 }}>
+                <div style={{ width:`${f.pct}%`, height:'100%', background:T.steelBlue, borderRadius:3 }}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pillars */}
+        <div style={{ background:T.white, borderRadius:8, padding:'18px 20px', boxShadow:'0 1px 3px rgba(0,0,0,0.06)', border:`1px solid ${T.border}` }}>
+          <div style={{ fontSize:12, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color:T.graphite, marginBottom:14 }}>Pilares de contenido</div>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+            {m.pillars.map(p => (
+              <span key={p.label} style={{ background:T.warmWhite, border:`1px solid ${T.border}`, borderRadius:20, padding:'4px 12px', fontSize:12, color:T.charcoal, fontWeight:700 }}>
+                {p.label} <span style={{ color:T.steelBlue }}>{p.pct}%</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Podio */}
+      <div style={{ background:T.white, borderRadius:8, padding:'18px 20px', boxShadow:'0 1px 3px rgba(0,0,0,0.06)', border:`1px solid ${T.border}` }}>
+        <div style={{ fontSize:12, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color:T.graphite, marginBottom:14 }}>Podio de viralidad</div>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:12 }}>
+          {m.topVideos.map(v => (
+            <div key={v.rank} style={{ border:`1px solid ${T.border}`, borderRadius:6, overflow:'hidden' }}>
+              <div style={{ height:80, background:v.thumb, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <span style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:28, color:'rgba(255,255,255,0.7)' }}>#{v.rank}</span>
+              </div>
+              <div style={{ padding:'10px 12px' }}>
+                <div style={{ fontSize:12, fontWeight:700, color:T.charcoal, marginBottom:4 }}>{v.title}</div>
+                <div style={{ fontSize:11, color:T.steelBlue, fontWeight:700 }}>{v.views} vistas</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HubRecursos() {
+  return (
+    <div>
+      <SectionTitle>Hub de Recursos</SectionTitle>
+      <SubLabel>Plantillas, referencias y assets del equipo.</SubLabel>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16 }}>
+        {RECURSOS.map(r => (
+          <div key={r.id} style={{ background:T.white, borderRadius:8, border:`1px solid ${T.border}`, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
+            <div style={{ height:90, background:r.color, display:'flex', alignItems:'center', justifyContent:'center', opacity:0.85 }}>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            </div>
+            <div style={{ padding:'12px 14px' }}>
+              <div style={{ fontWeight:700, fontSize:13, color:T.charcoal, marginBottom:6 }}>{r.name}</div>
+              <div style={{ display:'flex', gap:6, marginBottom:10 }}>
+                {r.tags.map(t => <span key={t} style={{ background:'#F0F1F2', color:T.graphite, fontSize:10, padding:'2px 7px', borderRadius:3 }}>{t}</span>)}
+              </div>
+              <button style={{ fontFamily:'inherit', fontSize:12, fontWeight:700, background:'transparent', border:`1px solid ${T.border}`, borderRadius:5, padding:'6px 14px', color:T.steelBlue, cursor:'pointer', width:'100%' }}>Descargar</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ScriptingClientes({ setView, setActiveClient }) {
+  return (
+    <div>
+      <SectionTitle>Scripting — Clientes</SectionTitle>
+      <SubLabel>Perfiles de clientes para generación de guiones.</SubLabel>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:14 }}>
+        {CLIENTES_LIST.map(c => (
+          <div key={c.id} style={{ background:T.white, borderRadius:8, border:`1px solid ${T.border}`, padding:'16px', boxShadow:'0 1px 3px rgba(0,0,0,0.06)', textAlign:'center' }}>
+            <div style={{ width:52, height:52, borderRadius:'50%', background:T.coldSilver, margin:'0 auto 10px' }}></div>
+            <div style={{ fontWeight:700, fontSize:14, color:T.charcoal }}>{c.name}</div>
+            <div style={{ fontSize:12, color:T.graphite, marginBottom:4 }}>{c.handle}</div>
+            <div style={{ fontSize:11, color:T.steelBlue, fontWeight:700, marginBottom:12 }}>{c.niche}</div>
+            <div style={{ fontSize:11, color:T.graphite, marginBottom:12 }}>{c.videos} videos publicados</div>
+            <button onClick={() => { setActiveClient(c); setView('perfil'); }} style={{ fontFamily:'inherit', fontSize:12, fontWeight:700, background:T.steelBlue, border:'none', borderRadius:6, padding:'7px 16px', color:'#F5F5F2', cursor:'pointer', width:'100%' }}>Ver perfil</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Sidebar ──────────────────────────────────────────────
+const NAV = [
+  { id:'hub', label:'Hub de Edición', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> },
+  { id:'clientes', label:'Clientes', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
+  { id:'guiones', label:'Guiones', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> },
+  { id:'recursos', label:'Recursos', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> },
+];
+
+function Sidebar({ view, setView }) {
+  return (
+    <aside style={{ width:224, background:T.charcoal, display:'flex', flexDirection:'column', flexShrink:0, minHeight:'100vh' }}>
+      <div style={{ padding:'20px 16px 14px', borderBottom:`1px solid ${T.surfaceBorder}` }}>
+        <img src="../../assets/WORDMARK-10.svg" alt="Novum" style={{ height:22, marginBottom:6 }} onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} />
+        <span style={{ display:'none', fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:16, color:'#F5F5F2', letterSpacing:'0.03em' }}>NOVUM</span>
+        <div style={{ fontSize:10, color:T.graphite, textTransform:'uppercase', letterSpacing:'0.08em', marginTop:3 }}>editor</div>
+      </div>
+      <nav style={{ flex:1, padding:'8px 8px' }}>
+        {NAV.map(item => (
+          <button key={item.id} onClick={() => setView(item.id)} style={{ width:'100%', display:'flex', alignItems:'center', gap:9, padding:'9px 10px', borderRadius:6, border:'none', cursor:'pointer', fontFamily:'inherit', fontSize:13, color: view===item.id ? '#F5F5F2' : T.graphite, background: view===item.id ? T.raised : 'transparent', fontWeight: view===item.id ? 700 : 400, transition:'all 150ms', marginBottom:1, textAlign:'left' }}>
+            <span style={{ opacity: view===item.id ? 1 : 0.6 }}>{item.icon}</span>
+            {item.label}
+          </button>
+        ))}
+      </nav>
+      <div style={{ borderTop:`1px solid ${T.surfaceBorder}`, padding:'12px 14px' }}>
+        <div style={{ fontSize:12, fontWeight:700, color:'#F5F5F2', marginBottom:2 }}>Juan Rodríguez</div>
+        <div style={{ fontSize:10, color:T.graphite }}>juan@novum.mx</div>
+      </div>
+    </aside>
+  );
+}
+
+// ─── App ──────────────────────────────────────────────────
+function App() {
+  const [view, setView] = useState(() => localStorage.getItem('novum_dash_view') || 'hub');
+  const [activeClient, setActiveClient] = useState(null);
+
+  useEffect(() => { localStorage.setItem('novum_dash_view', view); }, [view]);
+
+  const handleSetView = (v) => { setView(v); };
+
+  return (
+    <div style={{ display:'flex', minHeight:'100vh' }}>
+      <Sidebar view={view} setView={handleSetView} />
+      <main style={{ flex:1, overflow:'auto', background:T.warmWhite }}>
+        <div style={{ maxWidth:1100, margin:'0 auto', padding:'36px 40px' }}>
+          {view === 'hub'      && <HubEdicion />}
+          {view === 'guiones'  && <ColaGuiones setView={handleSetView} />}
+          {view === 'clientes' && <ScriptingClientes setView={handleSetView} setActiveClient={setActiveClient} />}
+          {view === 'perfil'   && <PerfilCliente setView={handleSetView} />}
+          {view === 'recursos' && <HubRecursos />}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

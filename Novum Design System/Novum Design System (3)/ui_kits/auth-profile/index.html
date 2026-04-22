@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Novum — Auth & Profile</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  @font-face { font-family:'CenturyGothic'; src:url('../fonts/CENTURY GOTHIC_DELGADA.ttf'); font-weight:300; }
+  @font-face { font-family:'CenturyGothic'; src:url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight:400; }
+  @font-face { font-family:'CenturyGothic'; src:url('../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight:700; }
+  @font-face { font-family:'Arlon'; src:url('../fonts/ARLON BLACK.ttf'); font-weight:900; }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html, body, #root { height:100%; }
+  body { font-family:'CenturyGothic','Century Gothic',AppleGothic,sans-serif; background:#1C1F23; -webkit-font-smoothing:antialiased; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef } = React;
+
+const T = {
+  charcoal: '#121417', raised: '#1C1F23', elevated: '#22262B', border: '#2A2E33',
+  warmWhite: '#F5F5F2', graphite: '#6E7278', steelBlue: '#2F4A68',
+  steelHover: '#243a54', coldSilver: '#D0D3D8', white: '#FFFFFF',
+  success: '#27AE60', danger: '#C0392B',
+};
+
+// ─── Shared field components ──────────────────────────────
+function Field({ label, type='text', placeholder, value, onChange, hint, error, children }) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color: error ? T.danger : focused ? T.coldSilver : T.graphite, marginBottom:6, transition:'color 150ms' }}>{label}</label>
+      {children || (
+        <input
+          type={type} placeholder={placeholder} value={value} onChange={onChange}
+          onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+          style={{ width:'100%', fontFamily:'inherit', fontSize:14, color:T.warmWhite, background:'transparent', border:`1px solid ${error ? T.danger : focused ? T.coldSilver : T.border}`, borderRadius:6, padding:'11px 14px', outline:'none', transition:'border-color 150ms', '::placeholder': { color:T.graphite } }}
+        />
+      )}
+      {hint && !error && <div style={{ fontSize:11, color:T.graphite, marginTop:5 }}>{hint}</div>}
+      {error && <div style={{ fontSize:11, color:T.danger, marginTop:5 }}>{error}</div>}
+    </div>
+  );
+}
+
+function Btn({ children, onClick, variant='primary', fullWidth, style: extra }) {
+  const [hover, setHover] = useState(false);
+  const styles = {
+    primary: { background: hover ? T.steelHover : T.steelBlue, color: T.warmWhite, border: 'none' },
+    ghost:   { background: 'transparent', color: T.coldSilver, border: `1px solid ${T.border}` },
+    danger:  { background: hover ? '#a93226' : T.danger, color: '#fff', border: 'none' },
+  };
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+      style={{ fontFamily:'inherit', fontSize:14, fontWeight:700, borderRadius:6, padding:'12px 24px', cursor:'pointer', transition:'background 150ms', width: fullWidth ? '100%' : 'auto', letterSpacing:'0.02em', ...styles[variant], ...extra }}>
+      {children}
+    </button>
+  );
+}
+
+function Logo({ size = 'md' }) {
+  const h = size === 'lg' ? 28 : 20;
+  return (
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <img src="../assets/WORDMARK-10.svg" alt="Novum" style={{ height:h }}
+        onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }} />
+      <span style={{ display:'none', fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize: size === 'lg' ? 26 : 18, color:T.warmWhite, letterSpacing:'0.06em' }}>NOVUM</span>
+    </div>
+  );
+}
+
+function Divider() {
+  return <div style={{ height:1, background:T.border, margin:'24px 0' }} />;
+}
+
+// ─── LOGIN ────────────────────────────────────────────────
+function LoginScreen({ setScreen }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
+
+  return (
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'100%', padding:'48px 24px' }}>
+      <div style={{ width:'100%', maxWidth:420 }}>
+        {/* Logo */}
+        <div style={{ textAlign:'center', marginBottom:48 }}>
+          <Logo size="lg" />
+          <div style={{ fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', color:T.graphite, marginTop:10 }}>Plataforma de producción</div>
+        </div>
+
+        {/* Card */}
+        <div style={{ background:T.raised, borderRadius:10, border:`1px solid ${T.border}`, padding:'32px 32px 28px' }}>
+          <h1 style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:22, color:T.warmWhite, marginBottom:4, letterSpacing:'-0.01em' }}>Iniciar sesión</h1>
+          <p style={{ fontSize:13, color:T.graphite, marginBottom:28 }}>Bienvenido de vuelta.</p>
+
+          <Field label="Correo electrónico" type="email" placeholder="tu@correo.com" value={email} onChange={e => setEmail(e.target.value)} />
+          <div style={{ marginBottom:18 }}>
+            <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color:T.graphite, marginBottom:6 }}>Contraseña</label>
+            <div style={{ position:'relative' }}>
+              <input
+                type={showPass ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)}
+                style={{ width:'100%', fontFamily:'inherit', fontSize:14, color:T.warmWhite, background:'transparent', border:`1px solid ${T.border}`, borderRadius:6, padding:'11px 44px 11px 14px', outline:'none' }}
+              />
+              <button onClick={() => setShowPass(v => !v)} style={{ position:'absolute', right:12, top:'50%', transform:'translateY(-50%)', background:'none', border:'none', cursor:'pointer', color:T.graphite, fontSize:11, fontWeight:700, letterSpacing:'0.04em' }}>
+                {showPass ? 'ocultar' : 'ver'}
+              </button>
+            </div>
+          </div>
+
+          <Btn fullWidth onClick={() => {}}>Iniciar sesión</Btn>
+        </div>
+
+        {/* Footer link */}
+        <p style={{ textAlign:'center', fontSize:13, color:T.graphite, marginTop:20 }}>
+          ¿No tienes cuenta?{' '}
+          <button onClick={() => setScreen('register')} style={{ background:'none', border:'none', color:T.coldSilver, fontFamily:'inherit', fontSize:13, fontWeight:700, cursor:'pointer', textDecoration:'underline', textUnderlineOffset:3 }}>
+            Regístrate
+          </button>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── REGISTER ─────────────────────────────────────────────
+function RegisterScreen({ setScreen, isAdmin }) {
+  const [nombre, setNombre] = useState('');
+  const [email, setEmail] = useState('');
+  const [pass, setPass] = useState('');
+  const [passConf, setPassConf] = useState('');
+  const [rol, setRol] = useState('cliente');
+
+  const passError = passConf && pass !== passConf ? 'Las contraseñas no coinciden.' : null;
+
+  return (
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'100%', padding:'48px 24px' }}>
+      <div style={{ width:'100%', maxWidth:440 }}>
+        <div style={{ textAlign:'center', marginBottom:40 }}>
+          <Logo size="lg" />
+        </div>
+
+        <div style={{ background:T.raised, borderRadius:10, border:`1px solid ${T.border}`, padding:'32px 32px 28px' }}>
+          <h1 style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:22, color:T.warmWhite, marginBottom:4, letterSpacing:'-0.01em' }}>Crear cuenta</h1>
+          <p style={{ fontSize:13, color:T.graphite, marginBottom:28 }}>Completa tu información para comenzar.</p>
+
+          <Field label="Nombre completo" placeholder="María González" value={nombre} onChange={e => setNombre(e.target.value)} />
+          <Field label="Correo electrónico" type="email" placeholder="tu@correo.com" value={email} onChange={e => setEmail(e.target.value)} />
+          <Field label="Contraseña" type="password" placeholder="Mínimo 8 caracteres" value={pass} onChange={e => setPass(e.target.value)} hint="Usa letras, números y símbolos." />
+          <Field label="Confirmar contraseña" type="password" placeholder="Repite tu contraseña" value={passConf} onChange={e => setPassConf(e.target.value)} error={passError} />
+
+          {isAdmin && (
+            <>
+              <Divider />
+              <div style={{ marginBottom:18 }}>
+                <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color:T.graphite, marginBottom:6 }}>Rol de usuario</label>
+                <select value={rol} onChange={e => setRol(e.target.value)} style={{ width:'100%', fontFamily:'inherit', fontSize:14, color:T.warmWhite, background:T.elevated, border:`1px solid ${T.border}`, borderRadius:6, padding:'11px 14px', outline:'none', cursor:'pointer' }}>
+                  <option value="cliente">Cliente</option>
+                  <option value="editor">Editor</option>
+                  <option value="guionista">Guionista</option>
+                  <option value="admin">Admin</option>
+                </select>
+                <div style={{ fontSize:11, color:T.graphite, marginTop:5 }}>Visible solo para administradores.</div>
+              </div>
+            </>
+          )}
+
+          <Btn fullWidth onClick={() => {}}>Crear cuenta</Btn>
+        </div>
+
+        <p style={{ textAlign:'center', fontSize:13, color:T.graphite, marginTop:20 }}>
+          ¿Ya tienes cuenta?{' '}
+          <button onClick={() => setScreen('login')} style={{ background:'none', border:'none', color:T.coldSilver, fontFamily:'inherit', fontSize:13, fontWeight:700, cursor:'pointer', textDecoration:'underline', textUnderlineOffset:3 }}>
+            Inicia sesión
+          </button>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── PROFILE ──────────────────────────────────────────────
+function ProfileScreen({ setScreen }) {
+  const [nombre, setNombre] = useState('María González');
+  const [email] = useState('maria@correo.com');
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };
+
+  return (
+    <div style={{ minHeight:'100%' }}>
+      {/* Top bar */}
+      <header style={{ background:T.charcoal, borderBottom:`1px solid ${T.border}`, padding:'0 32px', height:52, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <Logo />
+        <button onClick={() => setScreen('login')} style={{ fontFamily:'inherit', fontSize:12, fontWeight:700, background:'transparent', border:`1px solid ${T.border}`, borderRadius:6, padding:'5px 14px', color:T.graphite, cursor:'pointer' }}>
+          Cerrar sesión
+        </button>
+      </header>
+
+      <div style={{ maxWidth:640, margin:'0 auto', padding:'48px 24px' }}>
+        <h1 style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:26, color:T.warmWhite, marginBottom:4, letterSpacing:'-0.01em' }}>Mi perfil</h1>
+        <p style={{ fontSize:13, color:T.graphite, marginBottom:36 }}>Gestiona tu información personal.</p>
+
+        {/* Avatar */}
+        <div style={{ display:'flex', alignItems:'center', gap:20, marginBottom:36 }}>
+          <div style={{ position:'relative' }}>
+            <div style={{ width:72, height:72, borderRadius:'50%', background:T.elevated, border:`2px solid ${T.border}`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <span style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:24, color:T.coldSilver }}>MG</span>
+            </div>
+            <button style={{ position:'absolute', bottom:0, right:0, width:24, height:24, borderRadius:'50%', background:T.steelBlue, border:`2px solid ${T.charcoal}`, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>
+          </div>
+          <div>
+            <div style={{ fontSize:16, fontWeight:700, color:T.warmWhite }}>{nombre}</div>
+            <div style={{ fontSize:13, color:T.graphite, marginTop:2 }}>{email}</div>
+            <div style={{ marginTop:6, display:'inline-flex', alignItems:'center', gap:5, background:'rgba(47,74,104,0.2)', borderRadius:4, padding:'3px 9px', border:`1px solid rgba(47,74,104,0.4)` }}>
+              <span style={{ width:5, height:5, borderRadius:'50%', background:T.steelBlue }}></span>
+              <span style={{ fontSize:10, fontWeight:700, letterSpacing:'0.07em', textTransform:'uppercase', color:'#7DA8D4' }}>cliente</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Form card */}
+        <div style={{ background:T.raised, borderRadius:10, border:`1px solid ${T.border}`, padding:'28px 32px', marginBottom:16 }}>
+          <div style={{ fontSize:12, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:T.graphite, marginBottom:20 }}>Información personal</div>
+
+          <Field label="Nombre completo" value={nombre} onChange={e => setNombre(e.target.value)} />
+
+          <div style={{ marginBottom:18 }}>
+            <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color:T.graphite, marginBottom:6 }}>Correo electrónico</label>
+            <input disabled value={email} style={{ width:'100%', fontFamily:'inherit', fontSize:14, color:T.graphite, background:T.elevated, border:`1px solid ${T.border}`, borderRadius:6, padding:'11px 14px', outline:'none', cursor:'not-allowed' }} />
+            <div style={{ fontSize:11, color:T.graphite, marginTop:5 }}>El correo no puede modificarse.</div>
+          </div>
+
+          <div style={{ marginBottom:24 }}>
+            <label style={{ display:'block', fontSize:11, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', color:T.graphite, marginBottom:6 }}>Rol</label>
+            <input disabled value="Cliente" style={{ width:'100%', fontFamily:'inherit', fontSize:14, color:T.graphite, background:T.elevated, border:`1px solid ${T.border}`, borderRadius:6, padding:'11px 14px', outline:'none', cursor:'not-allowed' }} />
+          </div>
+
+          <Btn onClick={handleSave} style={{ minWidth:160 }}>
+            {saved ? '✓ Guardado' : 'Guardar cambios'}
+          </Btn>
+        </div>
+
+        {/* Danger zone */}
+        <div style={{ background:T.raised, borderRadius:10, border:`1px solid rgba(192,57,43,0.3)`, padding:'22px 32px' }}>
+          <div style={{ fontSize:12, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'rgba(192,57,43,0.8)', marginBottom:8 }}>Zona de riesgo</div>
+          <p style={{ fontSize:13, color:T.graphite, marginBottom:16 }}>Al cerrar sesión perderás acceso hasta volver a ingresar.</p>
+          <Btn variant="danger" onClick={() => setScreen('login')}>Cerrar sesión</Btn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Preview frame ────────────────────────────────────────
+function DeviceFrame({ mode, children }) {
+  if (mode === 'desktop') {
+    return (
+      <div style={{ width:'100%', minHeight:'100vh', background:T.charcoal, overflow:'auto' }}>
+        {children}
+      </div>
+    );
+  }
+  // Mobile
+  return (
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh', background:'#0D0F11', padding:24 }}>
+      <div style={{ width:375, background:T.charcoal, borderRadius:40, overflow:'hidden', boxShadow:'0 24px 80px rgba(0,0,0,0.6)', border:'8px solid #2A2E33', position:'relative' }}>
+        {/* Notch */}
+        <div style={{ height:28, background:T.charcoal, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:100, height:5, background:T.border, borderRadius:3 }}></div>
+        </div>
+        <div style={{ maxHeight:'80vh', overflow:'auto' }}>
+          {children}
+        </div>
+        {/* Home indicator */}
+        <div style={{ height:24, background:T.charcoal, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:100, height:4, background:T.border, borderRadius:2 }}></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── App shell ────────────────────────────────────────────
+function App() {
+  const [screen, setScreen] = useState(() => localStorage.getItem('novum_auth_screen') || 'login');
+  const [mode, setMode] = useState(() => localStorage.getItem('novum_auth_mode') || 'desktop');
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const saveScreen = s => { setScreen(s); localStorage.setItem('novum_auth_screen', s); };
+  const saveMode = m => { setMode(m); localStorage.setItem('novum_auth_mode', m); };
+
+  const screens = ['login','register','perfil'];
+  const screenLabels = { login:'Login', register:'Register', perfil:'Perfil' };
+
+  return (
+    <div style={{ minHeight:'100vh', background:'#0D0F11' }}>
+      {/* Controls bar */}
+      <div style={{ position:'fixed', top:0, left:0, right:0, zIndex:1000, background:'rgba(13,15,17,0.95)', backdropFilter:'blur(8px)', borderBottom:'1px solid #1C1F23', padding:'8px 20px', display:'flex', alignItems:'center', gap:24 }}>
+        <span style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:12, color:T.graphite, letterSpacing:'0.1em' }}>NOVUM</span>
+        <div style={{ display:'flex', gap:4 }}>
+          {screens.map(s => (
+            <button key={s} onClick={() => saveScreen(s)} style={{ fontFamily:'inherit', fontSize:11, fontWeight:700, padding:'4px 12px', borderRadius:5, border:'none', cursor:'pointer', background: screen===s ? T.steelBlue : 'transparent', color: screen===s ? T.warmWhite : T.graphite, transition:'all 150ms', letterSpacing:'0.04em' }}>{screenLabels[s]}</button>
+          ))}
+        </div>
+        <div style={{ width:1, height:16, background:T.border }}></div>
+        <div style={{ display:'flex', gap:4 }}>
+          {['mobile','desktop'].map(m => (
+            <button key={m} onClick={() => saveMode(m)} style={{ fontFamily:'inherit', fontSize:11, fontWeight:700, padding:'4px 12px', borderRadius:5, border:'none', cursor:'pointer', background: mode===m ? T.raised : 'transparent', color: mode===m ? T.coldSilver : T.graphite, border: mode===m ? `1px solid ${T.border}` : '1px solid transparent', transition:'all 150ms' }}>{m === 'mobile' ? '📱 375px' : '🖥 1440px'}</button>
+          ))}
+        </div>
+        {screen === 'register' && (
+          <>
+            <div style={{ width:1, height:16, background:T.border }}></div>
+            <label style={{ display:'flex', alignItems:'center', gap:6, fontSize:11, color:T.graphite, cursor:'pointer' }}>
+              <input type="checkbox" checked={isAdmin} onChange={e => setIsAdmin(e.target.checked)} style={{ accentColor:T.steelBlue }} />
+              Vista admin (selector de rol)
+            </label>
+          </>
+        )}
+      </div>
+
+      {/* Content */}
+      <div style={{ paddingTop:41 }}>
+        <DeviceFrame mode={mode}>
+          {screen === 'login'    && <LoginScreen setScreen={saveScreen} />}
+          {screen === 'register' && <RegisterScreen setScreen={saveScreen} isAdmin={isAdmin} />}
+          {screen === 'perfil'   && <ProfileScreen setScreen={saveScreen} />}
+        </DeviceFrame>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Century Gothic', sans-serif; background: #F5F5F2; padding: 24px; }
+  .section-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7278; font-weight: 700; margin-bottom: 12px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+  button { font-family: 'Century Gothic', sans-serif; font-weight: 700; font-size: 13px; border-radius: 6px; padding: 8px 18px; border: none; cursor: pointer; transition: background 150ms ease; letter-spacing: 0.01em; }
+  .btn-primary { background: #2F4A68; color: #F5F5F2; }
+  .btn-primary:hover { background: #243a54; }
+  .btn-secondary { background: transparent; color: #2F4A68; border: 1.5px solid #2F4A68; }
+  .btn-danger { background: #C0392B; color: #fff; }
+  .btn-success { background: #27AE60; color: #fff; }
+  .btn-ghost { background: transparent; color: #6E7278; border: 1px solid #D0D3D8; }
+  .btn-sm { padding: 5px 12px; font-size: 11px; }
+  .btn-lg { padding: 11px 28px; font-size: 15px; }
+  .btn-icon { padding: 8px; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+  <div class="section-label">Button Variants</div>
+  <div class="row">
+    <button class="btn-primary">Primary</button>
+    <button class="btn-secondary">Secondary</button>
+    <button class="btn-success">Aprobar</button>
+    <button class="btn-danger">Rechazar</button>
+    <button class="btn-ghost">Ghost</button>
+  </div>
+
+  <div class="section-label">Button Sizes</div>
+  <div class="row">
+    <button class="btn-primary btn-sm">Small</button>
+    <button class="btn-primary">Default</button>
+    <button class="btn-primary btn-lg">Large</button>
+  </div>
+
+  <div class="section-label">Disabled States</div>
+  <div class="row">
+    <button class="btn-primary" disabled style="opacity:0.4;cursor:not-allowed;">Primary</button>
+    <button class="btn-secondary" disabled style="opacity:0.4;cursor:not-allowed;">Secondary</button>
+    <button class="btn-success" disabled style="opacity:0.4;cursor:not-allowed;">Aprobar</button>
+    <button class="btn-danger" disabled style="opacity:0.4;cursor:not-allowed;">Rechazar</button>
+  </div>
+
+  <div class="section-label">On Dark Background</div>
+  <div class="row" style="background:#121417;padding:16px;border-radius:8px;">
+    <button class="btn-primary">Primary</button>
+    <button style="font-family:'Century Gothic',sans-serif;font-weight:700;font-size:13px;border-radius:6px;padding:8px 18px;cursor:pointer;background:transparent;color:#F5F5F2;border:1.5px solid #D0D3D8;">Secondary</button>
+    <button class="btn-success">Aprobar</button>
+    <button class="btn-danger">Rechazar</button>
+  </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Arlon'; src: url('../fonts/ARLON BLACK.ttf'); font-weight: 900; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Century Gothic', sans-serif; background: #F5F5F2; padding: 24px; }
+  .section-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7278; font-weight: 700; margin-bottom: 10px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+</style>
+</head>
+<body>
+  <div class="section-label">Kanban Stage Badges</div>
+  <div class="row">
+    <span class="badge" style="background:#FEF9E7;color:#9A7800;"><span class="dot" style="background:#F5C842;"></span>Baby Idea</span>
+    <span class="badge" style="background:#FDF0E9;color:#B5552A;"><span class="dot" style="background:#E8845C;"></span>Guionizar</span>
+    <span class="badge" style="background:#EAFAF3;color:#267A50;"><span class="dot" style="background:#52B788;"></span>Grabación</span>
+    <span class="badge" style="background:#EBF4FC;color:#2560A0;"><span class="dot" style="background:#5B9BD5;"></span>Edición</span>
+    <span class="badge" style="background:#F4EEFB;color:#6234A0;"><span class="dot" style="background:#9B72CF;"></span>Publicado</span>
+  </div>
+
+  <div class="section-label">Status Badges</div>
+  <div class="row">
+    <span class="badge" style="background:#F0F1F2;color:#6E7278;"><span class="dot" style="background:#A8ADB3;"></span>Pendiente</span>
+    <span class="badge" style="background:#E5E6E8;color:#3D4147;"><span class="dot" style="background:#6E7278;"></span>En Progreso</span>
+    <span class="badge" style="background:#D0D3D8;color:#1C1F23;"><span class="dot" style="background:#3D4147;"></span>Entregado</span>
+  </div>
+
+  <div class="section-label">Action Badges</div>
+  <div class="row">
+    <span class="badge" style="background:#EAF7EF;color:#1E8449;">Aprobado</span>
+    <span class="badge" style="background:#FDEDEC;color:#A93226;">Rechazado</span>
+    <span class="badge" style="background:#EBF4FC;color:#2560A0;">En Revisión</span>
+    <span class="badge" style="background:#F4F6F7;color:#6E7278;">Borrador</span>
+  </div>
+
+  <div class="section-label">On Dark</div>
+  <div class="row" style="background:#121417;padding:14px;border-radius:8px;">
+    <span class="badge" style="background:rgba(245,200,66,0.15);color:#F5C842;"><span class="dot" style="background:#F5C842;"></span>Baby Idea</span>
+    <span class="badge" style="background:rgba(232,132,92,0.15);color:#E8845C;"><span class="dot" style="background:#E8845C;"></span>Guionizar</span>
+    <span class="badge" style="background:rgba(82,183,136,0.15);color:#52B788;"><span class="dot" style="background:#52B788;"></span>Grabación</span>
+    <span class="badge" style="background:rgba(91,155,213,0.15);color:#5B9BD5;"><span class="dot" style="background:#5B9BD5;"></span>Edición</span>
+    <span class="badge" style="background:rgba(155,114,207,0.15);color:#9B72CF;"><span class="dot" style="background:#9B72CF;"></span>Publicado</span>
+  </div>
+</body>
+</html>

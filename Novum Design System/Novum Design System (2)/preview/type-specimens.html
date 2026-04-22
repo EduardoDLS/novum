@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_DELGADA.ttf'); font-weight: 300; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_ULTRAGURESA.ttf'); font-weight: 900; }
+  @font-face { font-family: 'Arlon'; src: url('../fonts/ARLON BLACK.ttf'); font-weight: 900; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Century Gothic', sans-serif; background: #121417; padding: 24px; }
+  .pair { margin-bottom: 20px; }
+  .pair-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7278; margin-bottom: 6px; font-weight: 700; }
+  .weights { display: flex; gap: 24px; align-items: baseline; }
+  .weight-item { text-align: center; }
+  .weight-name { font-size: 10px; color: #6E7278; margin-top: 4px; }
+</style>
+</head>
+<body>
+  <div class="pair">
+    <div class="pair-label" style="color:#6E7278;">Arlon Black — Accent / Display</div>
+    <div style="font-family:'Arlon',sans-serif;font-weight:900;font-size:36px;color:#F5F5F2;letter-spacing:-0.01em;">
+      Aa Bb Cc Dd Ee
+    </div>
+    <div style="font-family:'Arlon',sans-serif;font-weight:900;font-size:13px;color:#6E7278;letter-spacing:0.06em;margin-top:8px;">
+      ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789
+    </div>
+  </div>
+
+  <div class="pair" style="margin-top:20px;">
+    <div class="pair-label" style="color:#6E7278;">Century Gothic — Body / UI (all weights)</div>
+    <div class="weights">
+      <div class="weight-item">
+        <div style="font-family:'Century Gothic',sans-serif;font-weight:300;font-size:22px;color:#F5F5F2;">Novum</div>
+        <div class="weight-name">Light 300</div>
+      </div>
+      <div class="weight-item">
+        <div style="font-family:'Century Gothic',sans-serif;font-weight:400;font-size:22px;color:#F5F5F2;">Novum</div>
+        <div class="weight-name">Regular 400</div>
+      </div>
+      <div class="weight-item">
+        <div style="font-family:'Century Gothic',sans-serif;font-weight:700;font-size:22px;color:#F5F5F2;">Novum</div>
+        <div class="weight-name">Bold 700</div>
+      </div>
+      <div class="weight-item">
+        <div style="font-family:'Century Gothic',sans-serif;font-weight:900;font-size:22px;color:#F5F5F2;">Novum</div>
+        <div class="weight-name">Black 900</div>
+      </div>
+    </div>
+    <div style="font-family:'Century Gothic',sans-serif;font-weight:400;font-size:12px;color:#6E7278;letter-spacing:0.04em;margin-top:10px;">
+      ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789
+    </div>
+  </div>
+</body>
+</html>

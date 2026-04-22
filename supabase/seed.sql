@@ -1,0 +1,5 @@
+-- Promover un usuario ya registrado a admin:
+--   1) crear la cuenta desde /register
+--   2) correr manualmente en el SQL editor:
+--
+-- update public.profiles set role = 'admin' where id = '<uuid del usuario>';

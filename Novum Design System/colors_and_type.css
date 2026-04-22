@@ -1,0 +1,242 @@
+/* ============================================================
+   NOVUM DESIGN SYSTEM — CSS Custom Properties
+   Brand: Modern Authority | GDL.MX | 2025
+   ============================================================ */
+
+/* ─── FONTS ─────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('./fonts/CENTURY GOTHIC_DELGADA.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('./fonts/CENTURY GOTHIC_REGULAR.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('./fonts/CENTURY GOTHIC_GRUES.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Century Gothic';
+  src: url('./fonts/CENTURY GOTHIC_ULTRAGURESA.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Arlon';
+  src: url('./fonts/ARLON BLACK.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
+
+:root {
+  /* ─── BASE COLOR PALETTE ──────────────────────────────── */
+  --color-charcoal-black:  #121417;
+  --color-warm-white:      #F5F5F2;
+  --color-graphite-gray:   #6E7278;
+  --color-steel-blue:      #2F4A68;
+  --color-cold-silver:     #D0D3D8;
+
+  /* ─── SURFACE SCALE (dark-mode layering) ─────────────── */
+  --surface-base:          #121417;   /* page background */
+  --surface-raised:        #1C1F23;   /* cards on dark */
+  --surface-elevated:      #22262B;   /* dropdowns, modals */
+  --surface-border:        #2A2E33;   /* subtle borders on dark */
+
+  /* ─── LIGHT SURFACE SCALE ────────────────────────────── */
+  --surface-light-base:    #F5F5F2;   /* page background light */
+  --surface-light-card:    #FFFFFF;   /* cards on light */
+  --surface-light-border:  #D0D3D8;   /* cold silver borders */
+
+  /* ─── SEMANTIC COLORS ────────────────────────────────── */
+  --color-fg-primary:      #121417;   /* main text on light */
+  --color-fg-secondary:    #6E7278;   /* secondary / muted text */
+  --color-fg-inverse:      #F5F5F2;   /* text on dark surfaces */
+  --color-fg-accent:       #2F4A68;   /* link / CTA color */
+
+  --color-border:          #D0D3D8;
+  --color-border-strong:   #A8ADB3;
+
+  --color-primary:         #2F4A68;   /* Steel Blue — CTAs */
+  --color-primary-hover:   #243a54;
+  --color-primary-fg:      #F5F5F2;
+
+  --color-danger:          #C0392B;
+  --color-danger-hover:    #a93226;
+  --color-danger-fg:       #FFFFFF;
+
+  --color-success:         #27AE60;
+  --color-success-hover:   #219a52;
+  --color-success-fg:      #FFFFFF;
+
+  /* ─── KANBAN STAGE COLORS ────────────────────────────── */
+  --kanban-baby-idea:      #F5C842;   /* warm yellow */
+  --kanban-baby-idea-bg:   #FEF9E7;
+  --kanban-guionizar:      #E8845C;   /* coral orange */
+  --kanban-guionizar-bg:   #FDF0E9;
+  --kanban-grabacion:      #52B788;   /* mint green */
+  --kanban-grabacion-bg:   #EAFAF3;
+  --kanban-edicion:        #5B9BD5;   /* sky blue */
+  --kanban-edicion-bg:     #EBF4FC;
+  --kanban-publicado:      #9B72CF;   /* soft purple */
+  --kanban-publicado-bg:   #F4EEFB;
+
+  /* ─── STATUS BADGE NEUTRALS ──────────────────────────── */
+  --status-pending:        #A8ADB3;
+  --status-pending-bg:     #F0F1F2;
+  --status-inprogress:     #6E7278;
+  --status-inprogress-bg:  #E5E6E8;
+  --status-delivered:      #3D4147;
+  --status-delivered-bg:   #D0D3D8;
+
+  /* ─── SHADOWS / ELEVATION ────────────────────────────── */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-3: 0 8px 24px rgba(0, 0, 0, 0.16);
+
+  /* ─── BORDER RADIUS ──────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* ─── SPACING SCALE (4px base unit) ─────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* ─── TYPOGRAPHY — FONTS ─────────────────────────────── */
+  --font-sans:    'Century Gothic', AppleGothic, 'Trebuchet MS', sans-serif;
+  --font-accent:  'Arlon', 'Century Gothic', sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Mono', monospace;
+
+  /* ─── TYPOGRAPHY — WEIGHTS ───────────────────────────── */
+  --fw-light:     300;
+  --fw-regular:   400;
+  --fw-bold:      700;
+  --fw-black:     900;
+
+  /* ─── TYPOGRAPHY — SIZE SCALE ────────────────────────── */
+  --text-xs:   11px;
+  --text-sm:   12px;
+  --text-base: 14px;
+  --text-md:   16px;
+  --text-lg:   20px;
+  --text-xl:   24px;
+  --text-2xl:  32px;
+  --text-3xl:  48px;
+  --text-4xl:  64px;
+
+  /* ─── TYPOGRAPHY — LINE HEIGHTS ──────────────────────── */
+  --leading-tight:   1.2;
+  --leading-snug:    1.35;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.7;
+
+  /* ─── TYPOGRAPHY — LETTER SPACING ───────────────────── */
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide:   0.04em;
+  --tracking-wider:  0.08em;
+  --tracking-caps:   0.12em;
+
+  /* ─── TRANSITIONS ────────────────────────────────────── */
+  --transition-fast:   100ms ease;
+  --transition-base:   150ms ease;
+  --transition-slow:   250ms ease;
+}
+
+/* ─── SEMANTIC TYPE ROLES ────────────────────────────────── */
+/* Apply these classes in HTML for consistent type usage */
+
+.t-display {
+  font-family: var(--font-accent);
+  font-weight: var(--fw-black);
+  font-size: var(--text-4xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-fg-primary);
+}
+
+.t-h1 {
+  font-family: var(--font-accent);
+  font-weight: var(--fw-black);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.t-h2 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-snug);
+}
+
+.t-h3 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+}
+
+.t-h4 {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+}
+
+.t-body {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+
+.t-body-sm {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.t-label {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-bold);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.t-muted {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  font-size: var(--text-sm);
+  color: var(--color-fg-secondary);
+  line-height: var(--leading-normal);
+}
+
+.t-metric {
+  font-family: var(--font-accent);
+  font-weight: var(--fw-black);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}

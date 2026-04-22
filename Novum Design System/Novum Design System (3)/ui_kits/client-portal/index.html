@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Novum — Portal del Cliente</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  @font-face { font-family: 'CenturyGothic'; src: url('../../fonts/CENTURY GOTHIC_DELGADA.ttf'); font-weight: 300; }
+  @font-face { font-family: 'CenturyGothic'; src: url('../../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'CenturyGothic'; src: url('../../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Arlon'; src: url('../../fonts/ARLON BLACK.ttf'); font-weight: 900; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #root { height: 100%; }
+  body { font-family: 'CenturyGothic', 'Century Gothic', AppleGothic, sans-serif; background: #F5F5F2; color: #121417; -webkit-font-smoothing: antialiased; }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #D0D3D8; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// ─── Design tokens ────────────────────────────────────────
+const T = {
+  charcoal: '#121417', warmWhite: '#F5F5F2', graphite: '#6E7278',
+  steelBlue: '#2F4A68', steelBlueHover: '#243a54', coldSilver: '#D0D3D8',
+  white: '#FFFFFF',
+  kanban: {
+    'Baby Idea':  { color: '#F5C842', bg: '#FEF9E7', text: '#9A7800' },
+    'Guionizar':  { color: '#E8845C', bg: '#FDF0E9', text: '#B5552A' },
+    'Grabación':  { color: '#52B788', bg: '#EAFAF3', text: '#267A50' },
+    'Edición':    { color: '#5B9BD5', bg: '#EBF4FC', text: '#2560A0' },
+    'Publicado':  { color: '#9B72CF', bg: '#F4EEFB', text: '#6234A0' },
+  }
+};
+
+// ─── Sample data ──────────────────────────────────────────
+const KANBAN_DATA = {
+  'Baby Idea':  [{ id:1, title:'Reel de marca personal', date:'10 may 2025', editor:'AM' }, { id:2, title:'Video testimonial clientes', date:'22 may 2025', editor:'JR' }],
+  'Guionizar':  [{ id:3, title:'Behind the scenes estudio', date:'05 may 2025', editor:'CL' }, { id:4, title:'Lanzamiento nueva colección', date:'12 may 2025', editor:'AM' }],
+  'Grabación':  [{ id:5, title:'Día en mi vida emprendedor', date:'28 abr 2025', editor:'JR' }],
+  'Edición':    [{ id:6, title:'Top 5 errores al iniciar', date:'25 abr 2025', editor:'CL' }, { id:7, title:'Colaboración con @carlos.mx', date:'27 abr 2025', editor:'AM' }],
+  'Publicado':  [{ id:8, title:'Mi historia de marca', date:'18 abr 2025', editor:'JR' }, { id:9, title:'Tips de posicionamiento', date:'10 abr 2025', editor:'CL' }],
+};
+
+const SCRIPT_DATA = [
+  { part: 'Hook', script: '¿Sabías que el 80% de los emprendedores fallan por no saber comunicar su valor? Hoy te voy a mostrar exactamente cómo posicionarte con autoridad desde el primer segundo.', tone: 'Directo, provocador', emotion: 'Intriga / Curiosidad' },
+  { part: 'Contexto', script: 'Llevo 3 años trabajando con marcas personales en México y he notado un patrón: los que triunfan no son los más creativos, son los más claros. Y eso empieza con la narrativa visual.', tone: 'Reflexivo, cercano', emotion: 'Identificación' },
+  { part: 'Desarrollo', script: 'El primer paso es definir tu punto de vista único. No qué haces, sino por qué lo haces diferente. Eso se convierte en el eje de todo tu contenido.', tone: 'Pedagógico, seguro', emotion: 'Revelación / Claridad' },
+  { part: 'Prueba social', script: 'Con este método, uno de nuestros clientes pasó de 800 a 45,000 seguidores en 6 meses. No por publicar más, sino por publicar con intención.', tone: 'Confiado, inspirador', emotion: 'Aspiración' },
+  { part: 'Cierre / CTA', script: 'Si quieres que trabajemos juntos para construir tu presencia visual, escríbeme "NOVUM" en el comentario. Empezamos cuando tú quieras.', tone: 'Cálido, accionable', emotion: 'Urgencia suave' },
+];
+
+const CALENDAR_DATA = {
+  deliveries: [
+    { day: 5, title: 'Top 5 errores al iniciar', stage: 'Publicado' },
+    { day: 10, title: 'Tips de posicionamiento', stage: 'Publicado' },
+    { day: 14, title: 'Colaboración @carlos.mx', stage: 'Edición' },
+    { day: 18, title: 'Mi historia de marca', stage: 'Publicado' },
+    { day: 25, title: 'Día en mi vida emprendedor', stage: 'Grabación' },
+    { day: 28, title: 'Behind the scenes estudio', stage: 'Guionizar' },
+  ]
+};
+
+// ─── Components ────────────────────────────────────────────
+function Badge({ stage, small }) {
+  const s = T.kanban[stage] || { bg: '#F0F1F2', text: '#6E7278', color: '#A8ADB3' };
+  return (
+    <span style={{ display:'inline-flex', alignItems:'center', gap:5, padding: small ? '2px 7px' : '3px 9px', borderRadius:4, background:s.bg, color:s.text, fontSize: small ? 10 : 11, fontWeight:700, letterSpacing:'0.05em', textTransform:'uppercase', whiteSpace:'nowrap' }}>
+      <span style={{ width:5, height:5, borderRadius:'50%', background:s.color, flexShrink:0 }}></span>
+      {stage}
+    </span>
+  );
+}
+
+function Avatar({ initials, color }) {
+  return (
+    <div style={{ width:26, height:26, borderRadius:'50%', background: color || T.steelBlue, display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, fontWeight:700, color:'#fff', flexShrink:0 }}>
+      {initials}
+    </div>
+  );
+}
+
+function Header({ view, setView }) {
+  return (
+    <header style={{ background:T.white, borderBottom:`1px solid ${T.coldSilver}`, position:'sticky', top:0, zIndex:100 }}>
+      <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 32px', height:52, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:32 }}>
+          <span style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:16, letterSpacing:'0.03em', color:T.charcoal }}>NOVUM</span>
+          <nav style={{ display:'flex', gap:24 }}>
+            {['kanban','calendario'].map(v => (
+              <button key={v} onClick={() => setView(v)} style={{ background:'none', border:'none', cursor:'pointer', fontSize:13, fontFamily:'inherit', color: view===v ? T.charcoal : T.graphite, fontWeight: view===v ? 700 : 400, paddingBottom:2, borderBottom: view===v ? `2px solid ${T.charcoal}` : '2px solid transparent', transition:'all 150ms' }}>
+                {v === 'kanban' ? 'Mi Kanban' : 'Calendario'}
+              </button>
+            ))}
+          </nav>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <span style={{ fontSize:13, color:T.graphite }}>María González</span>
+          <button style={{ fontFamily:'inherit', fontSize:12, fontWeight:700, background:'transparent', border:`1px solid ${T.coldSilver}`, borderRadius:6, padding:'5px 12px', color:T.graphite, cursor:'pointer' }}>Salir</button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function KanbanCard({ card, stage, onClick }) {
+  const [hover, setHover] = useState(false);
+  const stageColor = T.kanban[stage]?.color;
+  return (
+    <div onClick={onClick} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+      style={{ background:T.white, borderRadius:6, borderTop:`3px solid ${stageColor}`, padding:'12px 14px', boxShadow: hover ? '0 4px 12px rgba(0,0,0,0.10)' : '0 1px 3px rgba(0,0,0,0.07)', cursor: stage === 'Guionizar' ? 'pointer' : 'default', transition:'box-shadow 150ms ease', marginBottom:8 }}>
+      <div style={{ fontSize:13, fontWeight:700, color:T.charcoal, marginBottom:6, lineHeight:1.35 }}>{card.title}</div>
+      <div style={{ fontSize:11, color:T.graphite, marginBottom:10 }}>Entrega: {card.date}</div>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <Badge stage={stage} small />
+        <Avatar initials={card.editor} color={T.kanban[stage]?.color} />
+      </div>
+      {stage === 'Guionizar' && <div style={{ fontSize:10, color:T.steelBlue, marginTop:8, fontWeight:700, letterSpacing:'0.04em' }}>Ver guion →</div>}
+    </div>
+  );
+}
+
+function KanbanView({ setView, setSelectedCard }) {
+  const cols = Object.keys(T.kanban);
+  return (
+    <div style={{ maxWidth:1200, margin:'0 auto', padding:'32px 32px' }}>
+      <div style={{ marginBottom:28 }}>
+        <h1 style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:26, letterSpacing:'-0.01em', color:T.charcoal }}>Mi Kanban</h1>
+        <p style={{ fontSize:13, color:T.graphite, marginTop:4 }}>Tus ideas y videos en producción.</p>
+      </div>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:16 }}>
+        {cols.map(col => (
+          <div key={col}>
+            <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:12, paddingBottom:10, borderBottom:`2px solid ${T.kanban[col].color}` }}>
+              <span style={{ fontWeight:700, fontSize:13, color:T.charcoal }}>{col}</span>
+              <span style={{ background:T.kanban[col].bg, color:T.kanban[col].text, borderRadius:10, padding:'1px 7px', fontSize:10, fontWeight:700 }}>{KANBAN_DATA[col].length}</span>
+            </div>
+            {KANBAN_DATA[col].map(card => (
+              <KanbanCard key={card.id} card={card} stage={col} onClick={() => { if (col === 'Guionizar') { setSelectedCard(card); setView('guion'); } }} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GuionView({ card, setView }) {
+  return (
+    <div style={{ maxWidth:960, margin:'0 auto', padding:'32px 32px' }}>
+      <button onClick={() => setView('kanban')} style={{ fontFamily:'inherit', fontSize:12, fontWeight:700, background:'transparent', border:`1px solid ${T.coldSilver}`, borderRadius:6, padding:'6px 14px', color:T.graphite, cursor:'pointer', marginBottom:24, display:'flex', alignItems:'center', gap:6 }}>
+        ← Volver al Kanban
+      </button>
+      <div style={{ marginBottom:24 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:6 }}>
+          <Badge stage="Guionizar" />
+        </div>
+        <h1 style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:24, letterSpacing:'-0.01em', color:T.charcoal }}>{card?.title || 'Behind the scenes estudio'}</h1>
+        <p style={{ fontSize:12, color:T.graphite, marginTop:4 }}>Guion generado · Entrega: {card?.date || '05 may 2025'}</p>
+      </div>
+
+      <div style={{ background:T.white, borderRadius:8, border:`1px solid ${T.coldSilver}`, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'160px 1fr 200px 200px', background:T.charcoal }}>
+          {['Parte del video','Script','Modulación','Emoción'].map(h => (
+            <div key={h} style={{ padding:'11px 16px', fontSize:10, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:T.coldSilver }}>{h}</div>
+          ))}
+        </div>
+        {SCRIPT_DATA.map((row, i) => (
+          <div key={i} style={{ display:'grid', gridTemplateColumns:'160px 1fr 200px 200px', borderTop:`1px solid ${T.coldSilver}`, background: i%2===0 ? T.white : '#FAFAF8' }}>
+            <div style={{ padding:'14px 16px', fontSize:12, fontWeight:700, color:T.charcoal, borderRight:`1px solid ${T.coldSilver}` }}>{row.part}</div>
+            <div style={{ padding:'14px 16px', fontSize:13, color:T.charcoal, lineHeight:1.55, borderRight:`1px solid ${T.coldSilver}` }}>{row.script}</div>
+            <div style={{ padding:'14px 16px', fontSize:12, color:T.graphite, borderRight:`1px solid ${T.coldSilver}` }}>{row.tone}</div>
+            <div style={{ padding:'14px 16px', fontSize:12, color:T.steelBlue, fontWeight:700 }}>{row.emotion}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ marginTop:20, display:'flex', gap:10, justifyContent:'flex-end' }}>
+        <button style={{ fontFamily:'inherit', fontWeight:700, fontSize:13, background:'transparent', border:`1.5px solid ${T.coldSilver}`, borderRadius:6, padding:'9px 20px', color:T.graphite, cursor:'pointer' }}>Solicitar cambios</button>
+        <button style={{ fontFamily:'inherit', fontWeight:700, fontSize:13, background:'#27AE60', border:'none', borderRadius:6, padding:'9px 20px', color:'#fff', cursor:'pointer' }}>Aprobar guion</button>
+      </div>
+    </div>
+  );
+}
+
+function CalendarioView() {
+  const [month, setMonth] = useState({ year:2025, month:4 }); // May 2025
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const daysInMonth = new Date(month.year, month.month + 1, 0).getDate();
+  const firstDay = new Date(month.year, month.month, 1).getDay();
+  const deliveryMap = {};
+  CALENDAR_DATA.deliveries.forEach(d => { deliveryMap[d.day] = d; });
+
+  const cells = [];
+  for (let i=0; i<firstDay; i++) cells.push(null);
+  for (let d=1; d<=daysInMonth; d++) cells.push(d);
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  return (
+    <div style={{ maxWidth:900, margin:'0 auto', padding:'32px 32px' }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:28 }}>
+        <div>
+          <h1 style={{ fontFamily:'Arlon,sans-serif', fontWeight:900, fontSize:26, letterSpacing:'-0.01em', color:T.charcoal }}>Calendario</h1>
+          <p style={{ fontSize:13, color:T.graphite, marginTop:4 }}>Entregas programadas de tus videos.</p>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+          <button onClick={() => setMonth(m => { const d = new Date(m.year, m.month-1,1); return {year:d.getFullYear(),month:d.getMonth()}; })} style={{ background:'transparent', border:`1px solid ${T.coldSilver}`, borderRadius:6, width:32, height:32, cursor:'pointer', fontSize:16, display:'flex', alignItems:'center', justifyContent:'center', color:T.graphite }}>‹</button>
+          <span style={{ fontWeight:700, fontSize:15, minWidth:120, textAlign:'center' }}>{monthNames[month.month]} {month.year}</span>
+          <button onClick={() => setMonth(m => { const d = new Date(m.year, m.month+1,1); return {year:d.getFullYear(),month:d.getMonth()}; })} style={{ background:'transparent', border:`1px solid ${T.coldSilver}`, borderRadius:6, width:32, height:32, cursor:'pointer', fontSize:16, display:'flex', alignItems:'center', justifyContent:'center', color:T.graphite }}>›</button>
+        </div>
+      </div>
+
+      <div style={{ background:T.white, borderRadius:8, border:`1px solid ${T.coldSilver}`, overflow:'hidden', boxShadow:'0 1px 3px rgba(0,0,0,0.06)' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)', background:T.charcoal }}>
+          {['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map(d => (
+            <div key={d} style={{ padding:'10px 0', textAlign:'center', fontSize:11, fontWeight:700, letterSpacing:'0.08em', color:T.coldSilver, textTransform:'uppercase' }}>{d}</div>
+          ))}
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(7,1fr)' }}>
+          {cells.map((day, i) => {
+            const delivery = day && deliveryMap[day];
+            const isToday = day === 19 && month.month === 3;
+            return (
+              <div key={i} style={{ minHeight:80, padding:'8px', borderTop:`1px solid ${T.coldSilver}`, borderLeft: i%7!==0 ? `1px solid ${T.coldSilver}` : 'none', background: isToday ? '#EBF4FC' : T.white, position:'relative' }}>
+                {day && <div style={{ fontSize:12, fontWeight: isToday ? 700 : 400, color: isToday ? T.steelBlue : T.graphite, marginBottom:4 }}>{day}</div>}
+                {delivery && (
+                  <div style={{ background:T.kanban[delivery.stage]?.bg, borderLeft:`3px solid ${T.kanban[delivery.stage]?.color}`, borderRadius:3, padding:'4px 6px' }}>
+                    <div style={{ fontSize:10, fontWeight:700, color:T.kanban[delivery.stage]?.text, lineHeight:1.3 }}>{delivery.title}</div>
+                    <div style={{ fontSize:9, color:T.graphite, marginTop:2 }}>{delivery.stage}</div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── App ──────────────────────────────────────────────────
+function App() {
+  const [view, setView] = useState(() => localStorage.getItem('novum_client_view') || 'kanban');
+  const [selectedCard, setSelectedCard] = useState(null);
+
+  useEffect(() => { localStorage.setItem('novum_client_view', view); }, [view]);
+
+  return (
+    <div style={{ minHeight:'100vh', background:T.warmWhite }}>
+      <Header view={view === 'guion' ? 'kanban' : view} setView={v => { setView(v); setSelectedCard(null); }} />
+      {view === 'kanban' && <KanbanView setView={setView} setSelectedCard={setSelectedCard} />}
+      {view === 'guion' && <GuionView card={selectedCard} setView={setView} />}
+      {view === 'calendario' && <CalendarioView />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

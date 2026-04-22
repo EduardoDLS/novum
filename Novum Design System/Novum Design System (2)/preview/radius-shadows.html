@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Century Gothic', sans-serif; background: #F5F5F2; padding: 24px; }
+  .section-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7278; font-weight: 700; margin-bottom: 12px; }
+  .shadow-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .shadow-box { width: 100px; height: 60px; background: #fff; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+  .shadow-label { font-size: 10px; color: #6E7278; }
+  .shadow-spec { font-size: 9px; color: #A8ADB3; font-family: monospace; text-align: center; padding: 0 6px; }
+</style>
+</head>
+<body>
+  <div class="section-label">Elevation / Shadow System</div>
+  <div class="shadow-row">
+    <div>
+      <div class="shadow-box" style="box-shadow:none;border:1px solid #D0D3D8;">
+        <div class="shadow-label">Level 0</div>
+        <div class="shadow-spec">none (flat)</div>
+      </div>
+    </div>
+    <div>
+      <div class="shadow-box" style="box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+        <div class="shadow-label">Level 1</div>
+        <div class="shadow-spec">0 1px 3px<br/>rgba(0,0,0,0.08)</div>
+      </div>
+    </div>
+    <div>
+      <div class="shadow-box" style="box-shadow:0 4px 12px rgba(0,0,0,0.12);">
+        <div class="shadow-label">Level 2</div>
+        <div class="shadow-spec">0 4px 12px<br/>rgba(0,0,0,0.12)</div>
+      </div>
+    </div>
+    <div>
+      <div class="shadow-box" style="box-shadow:0 8px 24px rgba(0,0,0,0.16);">
+        <div class="shadow-label">Level 3</div>
+        <div class="shadow-spec">0 8px 24px<br/>rgba(0,0,0,0.16)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:16px;">Cards on Dark + Light</div>
+  <div style="display:flex;gap:16px;">
+    <div style="background:#121417;padding:16px;border-radius:8px;flex:1;">
+      <div style="background:#1C1F23;border-radius:6px;padding:14px;color:#F5F5F2;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,0.2);">
+        <div style="font-weight:700;margin-bottom:4px;">Card Oscura</div>
+        <div style="color:#6E7278;font-size:11px;">Superficie raised sobre charcoal</div>
+      </div>
+    </div>
+    <div style="background:#F5F5F2;padding:16px;border-radius:8px;flex:1;border:1px solid #D0D3D8;">
+      <div style="background:#fff;border-radius:6px;padding:14px;color:#121417;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+        <div style="font-weight:700;margin-bottom:4px;">Card Clara</div>
+        <div style="color:#6E7278;font-size:11px;">Superficie blanca sobre warm white</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

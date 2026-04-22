@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_REGULAR.ttf'); font-weight: 400; }
+  @font-face { font-family: 'Century Gothic'; src: url('../fonts/CENTURY GOTHIC_GRUES.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Arlon'; src: url('../fonts/ARLON BLACK.ttf'); font-weight: 900; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Century Gothic', sans-serif; background: #F5F5F2; padding: 24px; display: flex; gap: 24px; }
+  .section-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6E7278; font-weight: 700; margin-bottom: 10px; }
+
+  /* Sidebar */
+  .sidebar { width: 200px; background: #121417; border-radius: 8px; padding: 16px 12px; display: flex; flex-direction: column; gap: 0; }
+  .sidebar-logo { padding: 4px 8px 12px; border-bottom: 1px solid #2A2E33; margin-bottom: 8px; }
+  .sidebar-logo-name { font-family: 'Arlon', sans-serif; font-weight: 900; font-size: 16px; color: #F5F5F2; letter-spacing: 0.02em; }
+  .sidebar-logo-role { font-size: 10px; color: #6E7278; margin-top: 2px; text-transform: capitalize; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; font-size: 13px; color: #6E7278; cursor: pointer; transition: background 150ms; }
+  .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.06); color: #F5F5F2; }
+  .nav-item.active { color: #F5F5F2; }
+  .nav-icon { width: 16px; height: 16px; opacity: 0.7; }
+  .sidebar-footer { margin-top: auto; border-top: 1px solid #2A2E33; padding-top: 10px; }
+  .sidebar-user { font-size: 11px; color: #6E7278; padding: 4px 8px; }
+
+  /* Top header */
+  .header-wrap { flex: 1; }
+  .header { background: #fff; border: 1px solid #D0D3D8; border-radius: 8px; padding: 0 20px; height: 52px; display: flex; align-items: center; justify-content: space-between; }
+  .header-logo { font-family: 'Arlon', sans-serif; font-weight: 900; font-size: 15px; color: #121417; }
+  .header-nav { display: flex; gap: 20px; }
+  .header-nav a { font-size: 13px; color: #6E7278; text-decoration: none; }
+  .header-nav a.active { color: #121417; font-weight: 700; }
+  .header-right { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #6E7278; }
+  .logout-btn { font-family: 'Century Gothic', sans-serif; font-size: 12px; font-weight: 700; background: transparent; border: 1px solid #D0D3D8; border-radius: 6px; padding: 5px 12px; color: #6E7278; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="section-label">Sidebar (Dashboard Interno)</div>
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-name">NOVUM</div>
+        <div class="sidebar-logo-role">editor</div>
+      </div>
+      <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Hub de Edición
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clientes
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Guiones
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Recursos
+      </div>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">Juan Rodríguez</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-wrap">
+    <div class="section-label">Header (Portal Cliente)</div>
+    <div class="header">
+      <div style="display:flex;align-items:center;gap:28px;">
+        <div class="header-logo">NOVUM</div>
+        <nav class="header-nav">
+          <a href="#" class="active">Mi Kanban</a>
+          <a href="#">Calendario</a>
+        </nav>
+      </div>
+      <div class="header-right">
+        <span>María González</span>
+        <button class="logout-btn">Salir</button>
+      </div>
+    </div>
+    <div style="margin-top:16px;background:#fff;border:1px solid #D0D3D8;border-radius:8px;padding:16px 20px;">
+      <div class="section-label">Breadcrumb / Page Header</div>
+      <div style="display:flex;align-items:baseline;gap:12px;margin-top:4px;">
+        <h2 style="font-family:'Arlon',sans-serif;font-weight:900;font-size:22px;color:#121417;letter-spacing:-0.01em;">Hub de Edición</h2>
+        <span style="font-size:12px;color:#6E7278;">Semana del 14 al 20 abr 2025</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
