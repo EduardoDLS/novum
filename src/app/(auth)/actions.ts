@@ -37,7 +37,8 @@ export async function loginAction(
 
   if (error) return { error: error.message }
 
-  const { data: profile } = await supabase
+  const adminClient = createServiceClient()
+  const { data: profile } = await adminClient
     .from('profiles')
     .select('role')
     .eq('id', data.user.id)
