@@ -6,6 +6,7 @@ import { SignOutButton } from '@/components/nav/sign-out-button'
 import { Wordmark } from '@/components/brand/wordmark'
 import { DashboardMobileNav } from '@/components/nav/dashboard-mobile-nav'
 import { DashboardSidebarNav } from '@/components/nav/dashboard-sidebar-nav'
+import { RealtimeWatcher } from '@/components/realtime-watcher'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { profile } = await requireRole(['admin', 'editor', 'guionista'])
@@ -80,6 +81,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       {/* Nav móvil inferior */}
       <DashboardMobileNav pendingScripts={pendingScripts ?? null} />
+      <RealtimeWatcher />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { requireRole } from '@/lib/auth'
 import { SignOutButton } from '@/components/nav/sign-out-button'
 import { Wordmark } from '@/components/brand/wordmark'
 import { ClientMobileNav } from '@/components/nav/client-mobile-nav'
+import { RealtimeWatcher } from '@/components/realtime-watcher'
 
 const NAV = [
   { href: '/kanban',    label: 'Producción' },
@@ -62,6 +63,7 @@ export default async function ClientLayout({ children }: { children: React.React
       <main className="mx-auto max-w-5xl px-4 sm:px-6 py-6 pb-24 sm:py-8 sm:pb-8">{children}</main>
 
       <ClientMobileNav />
+      <RealtimeWatcher />
     </div>
   )
 }
