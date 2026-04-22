@@ -107,3 +107,17 @@ export async function deleteDelivery(deliveryId: string): Promise<DeliveryAction
   revalidatePath('/hub-edicion')
   return { ok: true }
 }
+
+export async function deleteIdeaFromHub(ideaId: string): Promise<DeliveryActionResult> {
+  await requireRole(['admin', 'editor', 'guionista'])
+  if (!ideaId) return { ok: false, error: 'ID requerido.' }
+
+  const supabase = createClient()
+  const { error } = await supabase.from('content_ideas').delete().eq('id', ideaId)
+  if (error) return { ok: false, error: error.message }
+
+  revalidatePath('/hub-edicion')
+  revalidatePath('/kanban')
+  revalidatePath('/clientes', 'layout')
+  return { ok: true }
+}

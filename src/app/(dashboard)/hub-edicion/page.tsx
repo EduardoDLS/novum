@@ -88,8 +88,17 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
   const ideaList = (allIdeas ?? []) as { id: string; title: string; client_id: string; status: string }[]
 
   type ActiveIdeaRow = { id: string; title: string; status: ContentStatus; assigned_to: string | null; clients: { name: string } | null }
+
+  const MEMBER_COLORS = [
+    '#3b82f6', '#8b5cf6', '#f97316', '#ec4899', '#14b8a6',
+    '#ef4444', '#6366f1', '#eab308', '#22c55e', '#06b6d4',
+  ]
   const profileMap: Record<string, string> = {}
-  for (const m of teamList) profileMap[m.id] = m.full_name ?? 'Sin nombre'
+  const colorMap: Record<string, string> = {}
+  teamList.forEach((m, i) => {
+    profileMap[m.id] = m.full_name ?? 'Sin nombre'
+    colorMap[m.id] = MEMBER_COLORS[i % MEMBER_COLORS.length]
+  })
 
   const boardIdeas: BoardIdea[] = ((activeIdeas ?? []) as unknown as ActiveIdeaRow[]).map((i) => ({
     id: i.id,
@@ -97,6 +106,7 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
     status: i.status,
     client_name: i.clients?.name ?? 'Cliente',
     editor_name: i.assigned_to ? profileMap[i.assigned_to] : null,
+    editor_color: i.assigned_to ? colorMap[i.assigned_to] : null,
   }))
 
   return (

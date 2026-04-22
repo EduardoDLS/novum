@@ -1,9 +1,9 @@
 'use client'
 
 import { useTransition } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { CONTENT_STATUS_ORDER, CONTENT_STATUS_LABEL, type ContentStatus } from '@/types/novum'
-import { moveIdeaStatus } from './actions'
+import { moveIdeaStatus, deleteIdeaFromHub } from './actions'
 
 const BOARD_STATUSES: ContentStatus[] = ['guionizar', 'grabacion', 'edicion', 'revision']
 
@@ -27,48 +27,57 @@ export type BoardIdea = {
   client_name: string
   status: ContentStatus
   editor_name?: string | null
+  editor_color?: string | null
 }
 
 function IdeaCard({ idea }: { idea: BoardIdea }) {
   const [pending, startTransition] = useTransition()
-  const allStatuses = CONTENT_STATUS_ORDER
-  const idx = allStatuses.indexOf(idea.status)
-  const prevStatus = idx > 1 ? allStatuses[idx - 1] : null
-  const nextStatus = idx < allStatuses.length - 1 ? allStatuses[idx + 1] : null
 
-  function move(status: ContentStatus) {
+  function handleMove(status: ContentStatus) {
     startTransition(async () => { await moveIdeaStatus(idea.id, status) })
   }
 
+  function handleDelete() {
+    if (!confirm('¿Eliminar este video? Esta acción no se puede deshacer.')) return
+    startTransition(async () => { await deleteIdeaFromHub(idea.id) })
+  }
+
   return (
-    <div className={`rounded-md p-3 space-y-1.5 transition-opacity ${pending ? 'opacity-40' : ''} ${CARD_BG[idea.status] ?? 'bg-card'}`}>
-      <p className="text-sm font-medium text-foreground leading-snug line-clamp-2">{idea.title}</p>
+    <div className={`rounded-md p-3 space-y-2 transition-opacity ${pending ? 'opacity-40' : ''} ${CARD_BG[idea.status] ?? 'bg-card'}`}>
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-sm font-medium text-foreground leading-snug line-clamp-2 flex-1">{idea.title}</p>
+        <button
+          onClick={handleDelete}
+          disabled={pending}
+          className="text-muted-foreground hover:text-destructive transition-colors disabled:opacity-40 shrink-0 mt-0.5"
+          title="Eliminar video"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
       <p className="text-xs text-muted-foreground">{idea.client_name}</p>
-      {idea.editor_name && (
-        <p className="text-xs text-muted-foreground">Editor: {idea.editor_name}</p>
-      )}
-      <div className="flex items-center gap-1 pt-1">
-        {prevStatus && prevStatus !== 'baby_idea' && (
-          <button
-            onClick={() => move(prevStatus)}
-            disabled={pending}
-            className="flex items-center gap-0.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
-          >
-            <ChevronLeft className="h-3 w-3" />
-            {CONTENT_STATUS_LABEL[prevStatus]}
-          </button>
+
+      <div className="flex items-center gap-2 pt-0.5">
+        {idea.editor_name && (
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground min-w-0">
+            <span
+              className="h-2 w-2 rounded-full shrink-0"
+              style={{ backgroundColor: idea.editor_color ?? '#6b7280' }}
+            />
+            <span className="truncate">{idea.editor_name}</span>
+          </span>
         )}
-        <span className="flex-1" />
-        {nextStatus && (
-          <button
-            onClick={() => move(nextStatus)}
-            disabled={pending}
-            className="flex items-center gap-0.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
-          >
-            {CONTENT_STATUS_LABEL[nextStatus]}
-            <ChevronRight className="h-3 w-3" />
-          </button>
-        )}
+        <select
+          value={idea.status}
+          disabled={pending}
+          onChange={(e) => handleMove(e.target.value as ContentStatus)}
+          className="ml-auto text-[11px] rounded border border-border bg-background px-1.5 py-0.5 text-muted-foreground focus:outline-none focus:border-ring cursor-pointer disabled:opacity-40"
+        >
+          {CONTENT_STATUS_ORDER.map((s) => (
+            <option key={s} value={s}>{CONTENT_STATUS_LABEL[s]}</option>
+          ))}
+        </select>
       </div>
     </div>
   )
@@ -80,12 +89,8 @@ export function ProductionBoard({ ideas }: { ideas: BoardIdea[] }) {
     ideas: ideas.filter((i) => i.status === status),
   }))
 
-  const totalActive = ideas.length
-
-  if (totalActive === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">Sin videos en producción activa.</p>
-    )
+  if (ideas.length === 0) {
+    return <p className="text-sm text-muted-foreground">Sin videos en producción activa.</p>
   }
 
   return (

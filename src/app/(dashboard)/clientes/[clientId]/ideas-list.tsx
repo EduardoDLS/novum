@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Plus, Pencil, Trash2, Check, X, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Plus, Pencil, Trash2, Check, X, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CONTENT_STATUS_ORDER, CONTENT_STATUS_LABEL, type ContentStatus } from '@/types/novum'
 import {
@@ -9,7 +9,6 @@ import {
   createIdeaForClient,
   updateIdeaForTeam,
   deleteIdeaForTeam,
-  moveIdeaStatusFromProfile,
 } from '../actions'
 
 type IdeaRow = {
@@ -81,14 +80,6 @@ function IdeaItem({ idea }: { idea: IdeaRow }) {
   const [error, setError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
 
-  const idx = MOVABLE.indexOf(idea.status)
-  const prevStatus = idx > 0 ? MOVABLE[idx - 1] : null
-  const nextStatus = idx < MOVABLE.length - 1 ? MOVABLE[idx + 1] : null
-
-  function move(status: ContentStatus) {
-    startTransition(async () => { await moveIdeaStatusFromProfile(idea.id, status) })
-  }
-
   function handleEditMeta(fd: FormData) {
     setError(null)
     fd.append('ideaId', idea.id)
@@ -118,14 +109,6 @@ function IdeaItem({ idea }: { idea: IdeaRow }) {
     <div className={`rounded-md border border-border bg-card overflow-hidden transition-opacity ${pending ? 'opacity-50' : ''}`}>
       {/* Fila principal */}
       <div className="flex items-center gap-2 px-3 py-2.5">
-        {/* Mover atrás */}
-        {prevStatus ? (
-          <button onClick={() => move(prevStatus)} disabled={pending} title={`Mover a ${CONTENT_STATUS_LABEL[prevStatus]}`}
-            className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40 shrink-0">
-            <ChevronLeft className="h-3.5 w-3.5" />
-          </button>
-        ) : <span className="w-3.5 shrink-0" />}
-
         <span className="flex-1 truncate text-sm text-foreground">{idea.title}</span>
 
         <div className="flex items-center gap-1.5 shrink-0">
@@ -160,14 +143,6 @@ function IdeaItem({ idea }: { idea: IdeaRow }) {
             </>
           )}
         </div>
-
-        {/* Mover adelante */}
-        {nextStatus ? (
-          <button onClick={() => move(nextStatus)} disabled={pending} title={`Mover a ${CONTENT_STATUS_LABEL[nextStatus]}`}
-            className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40 shrink-0">
-            <ChevronRight className="h-3.5 w-3.5" />
-          </button>
-        ) : <span className="w-3.5 shrink-0" />}
       </div>
 
       {/* Editar título y estado */}
