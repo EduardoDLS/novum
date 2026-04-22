@@ -60,13 +60,16 @@ export async function createClientWithAccount(formData: FormData): Promise<Creat
 
   const { data: clientRecord, error: clientError } = await service
     .from('clients')
-    .insert({
-      profile_id: userId,
-      name: parsed.data.name,
-      instagram_handle: parsed.data.instagram_handle || null,
-      niche: parsed.data.niche || null,
-      voice_tone: parsed.data.voice_tone || null,
-    })
+    .upsert(
+      {
+        profile_id: userId,
+        name: parsed.data.name,
+        instagram_handle: parsed.data.instagram_handle || null,
+        niche: parsed.data.niche || null,
+        voice_tone: parsed.data.voice_tone || null,
+      },
+      { onConflict: 'profile_id' },
+    )
     .select('id')
     .single()
 

@@ -23,7 +23,7 @@ export async function generateScript(
 
   // Paso 1: visión estratégica
   const visionRes = await openai.chat.completions.create({
-    model: 'gpt-5.4-mini',
+    model: 'gpt-4o-mini',
     max_tokens: 1500,
     messages: [
       { role: 'system', content: systemPrompt },
@@ -35,7 +35,7 @@ export async function generateScript(
 
   // Paso 2: guion final en JSON
   const scriptRes = await openai.chat.completions.create({
-    model: 'gpt-5.4-mini',
+    model: 'gpt-4o-mini',
     max_tokens: 3000,
     response_format: { type: 'json_object' },
     messages: [

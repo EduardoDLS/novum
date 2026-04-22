@@ -28,7 +28,7 @@ const UpdateInstagramSchema = z.object({
 export type ClientActionResult = { ok: true } | { ok: false; error: string }
 
 export async function updateClientContext(formData: FormData): Promise<ClientActionResult> {
-  await requireRole(['admin', 'editor', 'guionista'])
+  await requireRole(['admin', 'editor', 'guionista', 'cliente'])
 
   const parsed = UpdateClientSchema.safeParse({
     clientId: formData.get('clientId'),
