@@ -68,6 +68,8 @@ const config: Config = {
           'grabacion-bg': 'hsl(var(--kanban-grabacion-bg))',
           edicion: 'hsl(var(--kanban-edicion))',
           'edicion-bg': 'hsl(var(--kanban-edicion-bg))',
+          revision: 'hsl(var(--kanban-revision))',
+          'revision-bg': 'hsl(var(--kanban-revision-bg))',
           publicado: 'hsl(var(--kanban-publicado))',
           'publicado-bg': 'hsl(var(--kanban-publicado-bg))',
         },

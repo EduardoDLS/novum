@@ -13,6 +13,7 @@ const STATUS_LABEL: Record<ContentStatus, string> = {
   guionizar: 'Guionizando',
   grabacion: 'Grabación',
   edicion: 'Edición',
+  revision: 'Revisión WA',
   publicado: 'Publicado',
 }
 
@@ -21,6 +22,7 @@ const STATUS_DOT: Record<ContentStatus, string> = {
   guionizar:  'bg-kanban-guionizar',
   grabacion:  'bg-kanban-grabacion',
   edicion:    'bg-kanban-edicion',
+  revision:   'bg-kanban-revision',
   publicado:  'bg-kanban-publicado',
 }
 

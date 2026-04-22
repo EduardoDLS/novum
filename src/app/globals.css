@@ -92,6 +92,8 @@
     --kanban-grabacion-bg:  152 30% 12%;
     --kanban-edicion:       210 60% 60%;
     --kanban-edicion-bg:    210 35% 13%;
+    --kanban-revision:      142 55% 42%;
+    --kanban-revision-bg:   142 35% 11%;
     --kanban-publicado:     270 50% 65%;
     --kanban-publicado-bg:  270 30% 13%;
   }

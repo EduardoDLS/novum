@@ -35,6 +35,12 @@ export const STAGE_META: Record<ContentStatus, StageVisual> = {
     bg: 'bg-kanban-edicion-bg',
     accent: 'bg-kanban-edicion',
   },
+  revision: {
+    label: 'Revisión WA',
+    dot: 'bg-kanban-revision',
+    bg: 'bg-kanban-revision-bg',
+    accent: 'bg-kanban-revision',
+  },
   publicado: {
     label: 'Publicado',
     dot: 'bg-kanban-publicado',

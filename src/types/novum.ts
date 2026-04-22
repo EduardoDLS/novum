@@ -24,6 +24,7 @@ export type ContentStatus =
   | 'guionizar'
   | 'grabacion'
   | 'edicion'
+  | 'revision'
   | 'publicado'
 
 export const CONTENT_STATUS_ORDER: ContentStatus[] = [
@@ -31,6 +32,7 @@ export const CONTENT_STATUS_ORDER: ContentStatus[] = [
   'guionizar',
   'grabacion',
   'edicion',
+  'revision',
   'publicado',
 ]
 
@@ -39,6 +41,7 @@ export const CONTENT_STATUS_LABEL: Record<ContentStatus, string> = {
   guionizar: 'Guionizar',
   grabacion: 'Grabación',
   edicion: 'Edición',
+  revision: 'Revisión WA',
   publicado: 'Publicado',
 }
 

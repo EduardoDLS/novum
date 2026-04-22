@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { requireRole } from '@/lib/auth'
-import type { DeliveryStatus } from '@/types/novum'
+import type { ContentStatus, DeliveryStatus } from '@/types/novum'
 
 const CreateDeliverySchema = z.object({
   client_id: z.string().uuid(),
@@ -42,7 +42,38 @@ export async function createDelivery(formData: FormData): Promise<DeliveryAction
 
   if (error) return { ok: false, error: error.message }
 
+  // Auto-mover a 'edicion' cuando se asigna un editor a una idea
+  if (parsed.data.editor_id && parsed.data.content_idea_id) {
+    await supabase
+      .from('content_ideas')
+      .update({ status: 'edicion', assigned_to: parsed.data.editor_id })
+      .eq('id', parsed.data.content_idea_id)
+      .in('status', ['baby_idea', 'guionizar', 'grabacion'])
+  }
+
   revalidatePath('/hub-edicion')
+  revalidatePath('/kanban')
+  return { ok: true }
+}
+
+export async function moveIdeaStatus(
+  ideaId: string,
+  newStatus: ContentStatus,
+): Promise<DeliveryActionResult> {
+  await requireRole(['admin', 'editor', 'guionista'])
+  if (!ideaId) return { ok: false, error: 'ID requerido.' }
+
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('content_ideas')
+    .update({ status: newStatus })
+    .eq('id', ideaId)
+
+  if (error) return { ok: false, error: error.message }
+
+  revalidatePath('/hub-edicion')
+  revalidatePath('/kanban')
+  revalidatePath('/clientes', 'layout')
   return { ok: true }
 }
 
