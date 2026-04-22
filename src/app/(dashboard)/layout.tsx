@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Home, Calendar, FileText, FolderOpen, Users, UserCog } from 'lucide-react'
 import { requireRole } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SignOutButton } from '@/components/nav/sign-out-button'
@@ -16,15 +15,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .select('id', { count: 'exact', head: true })
     .eq('status', 'borrador')
 
-  const NAV = [
-    { href: '/inicio',      label: 'Inicio',        icon: Home,       badge: null },
-    { href: '/hub-edicion', label: 'Hub de Edición', icon: Calendar,   badge: null },
-    { href: '/clientes',    label: 'Clientes',       icon: Users,      badge: null },
-    { href: '/scripts',     label: 'Guiones',        icon: FileText,   badge: pendingScripts || null },
-    { href: '/recursos',    label: 'Recursos',       icon: FolderOpen, badge: null },
-    { href: '/equipo',      label: 'Equipo',         icon: UserCog,    badge: null },
-  ]
-
   return (
     <div className="flex min-h-screen bg-background">
       {/* Sidebar — solo desktop */}
@@ -37,7 +27,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <div className="mt-3 h-px bg-gradient-to-r from-novum-gold/40 via-novum-gold/10 to-transparent" />
         </div>
 
-        <DashboardSidebarNav items={NAV} />
+        <DashboardSidebarNav pendingScripts={pendingScripts ?? null} />
 
         <div className="border-t border-novum-dark-border px-3 py-3 space-y-1">
           <Link
