@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { homeForRole, type UserRole } from '@/types/novum'
 
 const credentialsSchema = z.object({
@@ -62,15 +63,14 @@ export async function registerAction(
     return { error: parsed.error.issues[0]?.message ?? 'Datos inválidos' }
   }
 
-  const supabase = createClient()
-  const { error } = await supabase.auth.signUp({
+  const admin = createServiceClient()
+  const { error } = await admin.auth.admin.createUser({
     email: parsed.data.email,
     password: parsed.data.password,
-    options: {
-      data: {
-        full_name: parsed.data.full_name,
-        role: parsed.data.role as UserRole,
-      },
+    email_confirm: true,
+    user_metadata: {
+      full_name: parsed.data.full_name,
+      role: parsed.data.role as UserRole,
     },
   })
 
