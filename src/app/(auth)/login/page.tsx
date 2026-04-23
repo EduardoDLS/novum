@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import {
   Card,
   CardContent,
@@ -28,12 +27,6 @@ export default function LoginPage({
           </div>
         )}
         <LoginForm next={searchParams.next ?? ''} />
-        <p className="text-center text-sm text-muted-foreground">
-          ¿No tienes cuenta?{' '}
-          <Link href="/register" className="text-foreground underline underline-offset-4">
-            Crear cuenta
-          </Link>
-        </p>
       </CardContent>
     </Card>
   )

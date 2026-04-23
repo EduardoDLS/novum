@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { requireRole } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { FileText, Video, Calendar, Users, ArrowRight, Clock } from 'lucide-react'
+import { Greeting } from './greeting'
 
 export const dynamic = 'force-dynamic'
 
@@ -62,18 +63,11 @@ export default async function InicioPage() {
     pendiente: 'Pendiente', en_progreso: 'En progreso', entregado: 'Entregado', publicado: 'Publicado',
   }
 
-  const hora = new Date().getHours()
-  const saludo = hora < 12 ? 'Buenos días' : hora < 19 ? 'Buenas tardes' : 'Buenas noches'
   const nombre = profile.full_name?.split(' ')[0] ?? 'equipo'
 
   return (
     <div className="space-y-8 max-w-4xl">
-      <header>
-        <h2 className="t-h1">{saludo}, {nombre}.</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })}
-        </p>
-      </header>
+      <Greeting nombre={nombre} />
 
       {/* Métricas rápidas */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

@@ -92,6 +92,49 @@ export async function registerAction(
   redirect('/login?registered=1')
 }
 
+const registerClienteSchema = credentialsSchema.extend({
+  full_name: z.string().min(2, 'Ingresa tu nombre completo'),
+})
+
+export async function registerClienteAction(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const parsed = registerClienteSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password'),
+    full_name: formData.get('full_name'),
+  })
+
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? 'Datos inválidos' }
+  }
+
+  const admin = createServiceClient()
+  try {
+    const { error } = await admin.auth.admin.createUser({
+      email: parsed.data.email,
+      password: parsed.data.password,
+      email_confirm: true,
+      user_metadata: {
+        full_name: parsed.data.full_name,
+        role: 'cliente',
+      },
+    })
+    if (error) {
+      if (error.message.toLowerCase().includes('already')) {
+        return { error: 'Ya existe una cuenta con ese email.' }
+      }
+      return { error: error.message }
+    }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Error al crear la cuenta' }
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/portal?registered=1')
+}
+
 export async function logoutAction() {
   const supabase = createClient()
   await supabase.auth.signOut()
