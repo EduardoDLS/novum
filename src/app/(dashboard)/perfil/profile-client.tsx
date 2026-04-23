@@ -5,6 +5,7 @@ import { Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AvatarUpload } from './avatar-upload'
 import { updateProfileName } from './actions'
+import { ChangePassword } from '@/app/(cliente)/cuenta/change-password'
 import type { UserRole } from '@/types/novum'
 
 const ROLE_LABEL: Record<UserRole, string> = {
@@ -67,6 +68,10 @@ export function ProfileClient({ userId, fullName, avatarUrl, role }: Props) {
             <Check className="h-3 w-3" /> Guardado
           </span>
         )}
+      </div>
+
+      <div className="border-t border-border pt-5">
+        <ChangePassword />
       </div>
     </div>
   )
