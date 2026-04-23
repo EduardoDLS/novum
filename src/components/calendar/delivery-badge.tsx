@@ -10,10 +10,11 @@ import {
   type DeliveryStatus,
   type ContentStatus,
 } from '@/types/novum'
-import { updateDeliveryFull, deleteDelivery } from '@/app/(dashboard)/hub-edicion/actions'
+import { updateDeliveryFull, updateDeliveryDetails, deleteDelivery } from '@/app/(dashboard)/hub-edicion/actions'
 
 type DeliveryWithClient = {
   id: string
+  delivery_date: string
   status: DeliveryStatus
   notes: string | null
   content_idea_id: string | null
@@ -28,6 +29,8 @@ export function DeliveryBadge({ delivery }: { delivery: DeliveryWithClient }) {
   const [ideaStatus, setIdeaStatus] = useState<ContentStatus | ''>(
     delivery.content_ideas?.status ?? '',
   )
+  const [editingDetails, setEditingDetails] = useState(false)
+  const [detailsError, setDetailsError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
 
   const colorClass = DELIVERY_STATUS_COLOR[delivery.status]
@@ -44,6 +47,16 @@ export function DeliveryBadge({ delivery }: { delivery: DeliveryWithClient }) {
         (ideaStatus as ContentStatus) || null,
       )
       setOpen(false)
+    })
+  }
+
+  function handleSaveDetails(fd: FormData) {
+    setDetailsError(null)
+    fd.append('deliveryId', delivery.id)
+    startTransition(async () => {
+      const res = await updateDeliveryDetails(fd)
+      if (!res.ok) { setDetailsError(res.error); return }
+      setEditingDetails(false)
     })
   }
 
@@ -70,6 +83,7 @@ export function DeliveryBadge({ delivery }: { delivery: DeliveryWithClient }) {
 
       {open && (
         <div className="rounded-b border border-t-0 border-border bg-card p-2 space-y-2 shadow-elev-1">
+          {/* Status de entrega */}
           <div className="space-y-1">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Entrega</p>
             <select
@@ -84,6 +98,7 @@ export function DeliveryBadge({ delivery }: { delivery: DeliveryWithClient }) {
             </select>
           </div>
 
+          {/* Status del video */}
           {delivery.content_ideas && (
             <div className="space-y-1">
               <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Video</p>
@@ -100,6 +115,7 @@ export function DeliveryBadge({ delivery }: { delivery: DeliveryWithClient }) {
             </div>
           )}
 
+          {/* Botones guardar status */}
           <div className="flex items-center gap-1">
             <button
               onClick={handleSave}
@@ -122,6 +138,61 @@ export function DeliveryBadge({ delivery }: { delivery: DeliveryWithClient }) {
             >
               <X className="h-3.5 w-3.5" />
             </button>
+          </div>
+
+          {/* Editar fecha y notas */}
+          <div className="border-t border-border pt-2">
+            {!editingDetails ? (
+              <button
+                onClick={() => setEditingDetails(true)}
+                className="text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Editar fecha y notas…
+              </button>
+            ) : (
+              <form action={handleSaveDetails} className="space-y-1.5">
+                <div className="space-y-1">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Fecha</p>
+                  <input
+                    type="date"
+                    name="delivery_date"
+                    required
+                    defaultValue={delivery.delivery_date}
+                    disabled={pending}
+                    className="w-full rounded border border-border bg-background px-2 py-1 text-[11px] focus:outline-none focus:border-ring disabled:opacity-50"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Notas</p>
+                  <input
+                    type="text"
+                    name="notes"
+                    maxLength={200}
+                    defaultValue={delivery.notes ?? ''}
+                    disabled={pending}
+                    placeholder="Notas opcionales…"
+                    className="w-full rounded border border-border bg-background px-2 py-1 text-[11px] focus:outline-none focus:border-ring disabled:opacity-50"
+                  />
+                </div>
+                {detailsError && <p className="text-[10px] text-destructive">{detailsError}</p>}
+                <div className="flex items-center gap-1">
+                  <button
+                    type="submit"
+                    disabled={pending}
+                    className="flex-1 rounded bg-foreground px-2 py-1 text-[11px] font-medium text-background hover:opacity-90 disabled:opacity-40 transition-opacity"
+                  >
+                    {pending ? 'Guardando…' : 'Guardar fecha'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditingDetails(false)}
+                    className="rounded p-1 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

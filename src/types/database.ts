@@ -102,6 +102,8 @@ export type Database = {
           type: ResourceType
           url: string
           tags: string[]
+          account_email: string | null
+          account_password: string | null
           created_by: string | null
           created_at: string
         }
@@ -110,8 +112,10 @@ export type Database = {
           client_id?: string | null
           name: string
           type?: ResourceType
-          url: string
+          url?: string
           tags?: string[]
+          account_email?: string | null
+          account_password?: string | null
           created_by?: string | null
         }
         Update: {
@@ -120,6 +124,8 @@ export type Database = {
           url?: string
           tags?: string[]
           client_id?: string | null
+          account_email?: string | null
+          account_password?: string | null
         }
         Relationships: []
       }

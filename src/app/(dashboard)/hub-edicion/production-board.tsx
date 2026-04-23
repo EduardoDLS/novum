@@ -1,9 +1,10 @@
 'use client'
 
-import { useTransition } from 'react'
-import { Trash2 } from 'lucide-react'
+import { useState, useTransition } from 'react'
+import { Trash2, Pencil, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { CONTENT_STATUS_ORDER, CONTENT_STATUS_LABEL, type ContentStatus } from '@/types/novum'
-import { moveIdeaStatus, deleteIdeaFromHub } from './actions'
+import { moveIdeaStatus, deleteIdeaFromHub, updateIdeaTitleFromHub } from './actions'
 
 const BOARD_STATUSES: ContentStatus[] = ['guionizar', 'grabacion', 'edicion', 'revision']
 
@@ -31,6 +32,8 @@ export type BoardIdea = {
 }
 
 function IdeaCard({ idea }: { idea: BoardIdea }) {
+  const [editing, setEditing] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
 
   function handleMove(status: ContentStatus) {
@@ -42,19 +45,65 @@ function IdeaCard({ idea }: { idea: BoardIdea }) {
     startTransition(async () => { await deleteIdeaFromHub(idea.id) })
   }
 
+  function handleEditTitle(fd: FormData) {
+    setEditError(null)
+    fd.append('ideaId', idea.id)
+    startTransition(async () => {
+      const res = await updateIdeaTitleFromHub(fd)
+      if (!res.ok) { setEditError(res.error); return }
+      setEditing(false)
+    })
+  }
+
   return (
     <div className={`rounded-md p-3 space-y-2 transition-opacity ${pending ? 'opacity-40' : ''} ${CARD_BG[idea.status] ?? 'bg-card'}`}>
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-medium text-foreground leading-snug line-clamp-2 flex-1">{idea.title}</p>
-        <button
-          onClick={handleDelete}
-          disabled={pending}
-          className="text-muted-foreground hover:text-destructive transition-colors disabled:opacity-40 shrink-0 mt-0.5"
-          title="Eliminar video"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
-      </div>
+      {editing ? (
+        <form action={handleEditTitle} className="space-y-1.5">
+          <input
+            name="title"
+            required
+            autoFocus
+            maxLength={280}
+            defaultValue={idea.title}
+            className="w-full rounded border border-border bg-background px-2 py-1.5 text-sm outline-none focus:border-ring"
+          />
+          {editError && <p className="text-xs text-destructive">{editError}</p>}
+          <div className="flex items-center gap-1">
+            <Button type="submit" size="sm" disabled={pending} className="h-6 text-xs px-2">
+              {pending ? '…' : 'Guardar'}
+            </Button>
+            <button
+              type="button"
+              onClick={() => { setEditing(false); setEditError(null) }}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-sm font-medium text-foreground leading-snug line-clamp-2 flex-1">{idea.title}</p>
+          <div className="flex items-center gap-1 shrink-0 mt-0.5">
+            <button
+              onClick={() => setEditing(true)}
+              disabled={pending}
+              className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
+              title="Editar título"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={pending}
+              className="text-muted-foreground hover:text-destructive transition-colors disabled:opacity-40"
+              title="Eliminar video"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
 
       <p className="text-xs text-muted-foreground">{idea.client_name}</p>
 

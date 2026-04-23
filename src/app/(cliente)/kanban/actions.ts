@@ -80,3 +80,30 @@ export async function deleteBabyIdea(ideaId: string): Promise<{ ok: boolean; err
   revalidatePath('/kanban')
   return { ok: true }
 }
+
+const UpdateBabyIdeaSchema = z.object({
+  ideaId: z.string().uuid(),
+  title: z.string().trim().min(4, 'Describe tu idea en al menos 4 caracteres.').max(280),
+})
+
+export async function updateBabyIdea(formData: FormData): Promise<{ ok: boolean; error?: string }> {
+  await requireRole(['cliente'])
+
+  const parsed = UpdateBabyIdeaSchema.safeParse({
+    ideaId: formData.get('ideaId'),
+    title: formData.get('title'),
+  })
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? 'Dato inválido.' }
+
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('content_ideas')
+    .update({ title: parsed.data.title })
+    .eq('id', parsed.data.ideaId)
+    .eq('status', 'baby_idea')
+
+  if (error) return { ok: false, error: error.message }
+
+  revalidatePath('/kanban')
+  return { ok: true }
+}

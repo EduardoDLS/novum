@@ -4,7 +4,9 @@ import { CalendarNav } from '@/components/calendar/calendar-nav'
 import { MonthGrid } from '@/components/calendar/month-grid'
 import { WeekGrid } from '@/components/calendar/week-grid'
 import { CreateDeliveryForm } from './create-delivery-form'
+import { ProductionBoard } from './production-board'
 import type { ContentStatus, DeliveryStatus } from '@/types/novum'
+import type { BoardIdea } from './production-board'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,7 +47,7 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
     dateTo = sunday.toISOString().slice(0, 10)
   }
 
-  const [{ data: deliveries }, { data: clients }, { data: team }, { data: allIdeas }] =
+  const [{ data: deliveries }, { data: clients }, { data: team }, { data: boardIdeasRaw }] =
     await Promise.all([
       supabase
         .from('deliveries')
@@ -61,7 +63,7 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
         .order('full_name'),
       supabase
         .from('content_ideas')
-        .select('id, title, client_id, status')
+        .select('id, title, client_id, status, clients(name)')
         .neq('status', 'publicado')
         .order('created_at', { ascending: false }),
     ])
@@ -77,14 +79,36 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
     profiles: { full_name: string | null } | null
   }
 
+  type RawBoardIdea = {
+    id: string
+    title: string
+    client_id: string
+    status: string
+    clients: { name: string } | null
+  }
+
   const rows = (deliveries ?? []) as unknown as DeliveryRow[]
   const clientList = (clients ?? []) as { id: string; name: string }[]
   const teamList = (team ?? []) as { id: string; full_name: string | null; role: string }[]
-  const ideaList = (allIdeas ?? []) as { id: string; title: string; client_id: string; status: string }[]
+  const rawIdeas = (boardIdeasRaw ?? []) as unknown as RawBoardIdea[]
 
-  const activeCount = ideaList.filter((i) =>
-    ['guionizar', 'grabacion', 'edicion', 'revision'].includes(i.status)
-  ).length
+  const BOARD_ACTIVE = new Set(['guionizar', 'grabacion', 'edicion', 'revision'])
+
+  const boardIdeas: BoardIdea[] = rawIdeas
+    .filter((i) => BOARD_ACTIVE.has(i.status))
+    .map((i) => ({
+      id: i.id,
+      title: i.title,
+      client_name: i.clients?.name ?? '—',
+      status: i.status as ContentStatus,
+    }))
+
+  const allIdeasForForm = rawIdeas.map((i) => ({
+    id: i.id,
+    title: i.title,
+    client_id: i.client_id,
+    status: i.status,
+  }))
 
   return (
     <div className="space-y-8">
@@ -92,11 +116,19 @@ export default async function HubEdicionPage({ searchParams }: { searchParams: S
         <header className="space-y-1">
           <h2 className="t-h1">Hub de Edición</h2>
           <p className="text-sm text-muted-foreground">
-            {activeCount} video{activeCount !== 1 ? 's' : ''} en producción activa.
+            {boardIdeas.length} video{boardIdeas.length !== 1 ? 's' : ''} en producción activa.
           </p>
         </header>
-        <CreateDeliveryForm clients={clientList} team={teamList} ideas={ideaList} />
+        <CreateDeliveryForm clients={clientList} team={teamList} ideas={allIdeasForForm} />
       </div>
+
+      {/* Board de producción activa */}
+      {boardIdeas.length > 0 && (
+        <section className="rounded-lg border border-border bg-card p-5 shadow-elev-1">
+          <h3 className="font-medium mb-4">Videos en producción</h3>
+          <ProductionBoard ideas={boardIdeas} />
+        </section>
+      )}
 
       <CalendarNav year={year} month={month} view={view} week={week} />
 

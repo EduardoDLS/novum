@@ -139,13 +139,14 @@ export type Delivery = {
   updated_at: string
 }
 
-export type ResourceType = 'plantilla' | 'referencia' | 'asset' | 'guia'
+export type ResourceType = 'plantilla' | 'referencia' | 'asset' | 'guia' | 'cuenta'
 
 export const RESOURCE_TYPE_LABEL: Record<ResourceType, string> = {
   plantilla: 'Plantilla',
   referencia: 'Referencia',
   asset: 'Asset',
   guia: 'Guía',
+  cuenta: 'Cuenta',
 }
 
 export type Resource = {
@@ -155,6 +156,8 @@ export type Resource = {
   type: ResourceType
   url: string
   tags: string[]
+  account_email: string | null
+  account_password: string | null
   created_by: string | null
   created_at: string
 }

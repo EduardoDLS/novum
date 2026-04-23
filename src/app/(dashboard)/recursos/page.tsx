@@ -17,7 +17,7 @@ export default async function RecursosPage({
   const [{ data: resources }, { data: clients }] = await Promise.all([
     supabase
       .from('resources')
-      .select('id, client_id, name, type, url, tags, created_at')
+      .select('id, client_id, name, type, url, tags, account_email, account_password, created_at')
       .order('created_at', { ascending: false }),
     supabase
       .from('clients')
@@ -32,6 +32,8 @@ export default async function RecursosPage({
     type: ResourceType
     url: string
     tags: string[]
+    account_email: string | null
+    account_password: string | null
     created_at: string
   }[]
 
