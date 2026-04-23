@@ -4,7 +4,7 @@ import type { Database } from '@/types/database'
 import { homeForRole, isInternalRole, type UserRole } from '@/types/novum'
 
 const PUBLIC_ROUTES = ['/login', '/register', '/auth/callback']
-const PUBLIC_PREFIXES = ['/embed']
+const PUBLIC_PREFIXES = ['/embed', '/portal']
 const DASHBOARD_PREFIXES = ['/inicio', '/hub-edicion', '/clientes', '/scripts', '/recursos', '/equipo', '/perfil']
 const CLIENT_PREFIXES = ['/kanban', '/calendario', '/guion', '/metricas', '/cuenta']
 
