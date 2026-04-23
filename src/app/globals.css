@@ -42,12 +42,12 @@
 @layer base {
   :root {
     /* ── Dark Premium palette ── */
-    --gold:            212 38% 30%;      /* #2F4A68 — azul Novum */
-    --gold-dim:        212 38% 18%;
+    --gold:            210 47% 52%;      /* #4A8EC4 — azul metálico Novum */
+    --gold-dim:        210 47% 36%;      /* #2D6899 — azul más oscuro */
     --obsidian:        220 16% 7%;       /* #0E1013 — fondo base */
     --obsidian-raised: 220 14% 10%;      /* #151719 — cards */
     --obsidian-elev:   220 12% 13%;      /* #1B1E22 — elementos elevados */
-    --obsidian-border: 220 10% 18%;      /* #272B31 — bordes */
+    --obsidian-border: 215 20% 22%;      /* #2D3A48 — bordes con tinte azul */
     --warm-white:      40 20% 94%;       /* #F2EFE8 — texto principal */
     --cool-gray:       220 8% 55%;       /* #848A92 — texto secundario */
     --cool-gray-dim:   220 6% 38%;       /* #5C6068 — texto terciario */
