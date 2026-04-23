@@ -7,7 +7,9 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import type { UserRole } from '@/types/novum'
 
-export type TeamActionResult = { ok: true } | { ok: false; error: string }
+export type TeamActionResult =
+  | { ok: true; tempPassword?: string; email?: string }
+  | { ok: false; error: string }
 
 const InviteSchema = z.object({
   email: z.string().email('Email inválido.'),
@@ -53,7 +55,7 @@ export async function inviteTeamMember(formData: FormData): Promise<TeamActionRe
   if (profileError) return { ok: false, error: profileError.message }
 
   revalidatePath('/equipo')
-  return { ok: true }
+  return { ok: true, tempPassword, email: parsed.data.email }
 }
 
 export async function changeRole(formData: FormData): Promise<TeamActionResult> {

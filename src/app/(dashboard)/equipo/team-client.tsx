@@ -1,12 +1,30 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Plus, Trash2, X, Check, Shield, Pencil } from 'lucide-react'
+import { Plus, Trash2, X, Check, Shield, Pencil, Copy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { inviteTeamMember, changeRole, removeTeamMember } from './actions'
 import type { UserRole } from '@/types/novum'
 
 type Member = { id: string; full_name: string | null; role: UserRole; avatar_url: string | null; created_at: string }
+
+function CredentialRow({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false)
+  function copy() {
+    navigator.clipboard.writeText(value)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+  return (
+    <div className="flex items-center gap-3 rounded-md border border-border bg-card px-3 py-2">
+      <span className="t-label text-muted-foreground w-32 shrink-0">{label}</span>
+      <span className="flex-1 font-mono text-sm text-foreground truncate">{value}</span>
+      <button onClick={copy} className="shrink-0 text-muted-foreground hover:text-foreground transition-colors" title="Copiar">
+        {copied ? <Check className="h-3.5 w-3.5 text-kanban-grabacion" /> : <Copy className="h-3.5 w-3.5" />}
+      </button>
+    </div>
+  )
+}
 
 const ROLE_LABEL: Record<string, string> = { admin: 'Admin', editor: 'Editor', guionista: 'Guionista', cliente: 'Cliente' }
 const ROLE_COLOR: Record<string, string> = {
@@ -29,6 +47,9 @@ export function TeamClient({ members, currentUserId }: { members: Member[]; curr
       const res = await inviteTeamMember(fd)
       if (!res.ok) { setError(res.error); return }
       setShowInvite(false)
+      if (res.tempPassword && res.email) {
+        setInviteResult({ email: res.email, password: res.tempPassword })
+      }
     })
   }
 
@@ -54,6 +75,25 @@ export function TeamClient({ members, currentUserId }: { members: Member[]; curr
           <Plus className="h-3.5 w-3.5" /> Agregar miembro
         </Button>
       </div>
+
+      {/* Credenciales del nuevo miembro */}
+      {inviteResult && (
+        <div className="rounded-lg border border-kanban-grabacion/30 bg-kanban-grabacion/10 p-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-kanban-grabacion">Cuenta creada — comparte estas credenciales</p>
+            <button onClick={() => setInviteResult(null)} className="text-muted-foreground hover:text-foreground">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="space-y-2">
+            <CredentialRow label="Email" value={inviteResult.email} />
+            <CredentialRow label="Contraseña temporal" value={inviteResult.password} />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            El miembro debe cambiar la contraseña desde su perfil al ingresar. Esta información no volverá a mostrarse.
+          </p>
+        </div>
+      )}
 
       {/* Formulario de invitación */}
       {showInvite && (
