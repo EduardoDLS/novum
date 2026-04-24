@@ -1,15 +1,29 @@
 import { ImageResponse } from 'next/og'
+import { NextRequest } from 'next/server'
 
-export const size = { width: 180, height: 180 }
-export const contentType = 'image/png'
+export const runtime = 'edge'
 
-export default function AppleIcon() {
+const ALLOWED = new Set([192, 512])
+
+export function GET(
+  _req: NextRequest,
+  { params }: { params: { size: string } },
+) {
+  const px = parseInt(params.size, 10)
+
+  if (!ALLOWED.has(px)) {
+    return new Response('Not found', { status: 404 })
+  }
+
+  const logoW = Math.round(px * 0.82)
+  const logoH = Math.round(logoW * (96.64 / 132.67))
+
   return new ImageResponse(
     (
       <div
         style={{
-          width: 180,
-          height: 180,
+          width: px,
+          height: px,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -19,8 +33,8 @@ export default function AppleIcon() {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 132.67 96.64"
-          width={148}
-          height={108}
+          width={logoW}
+          height={logoH}
         >
           <path
             fill="#4A8EC4"
@@ -33,6 +47,6 @@ export default function AppleIcon() {
         </svg>
       </div>
     ),
-    { width: 180, height: 180 },
+    { width: px, height: px },
   )
 }

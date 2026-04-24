@@ -15,6 +15,10 @@ export const metadata: Metadata = {
     capable: true,
     title: 'Novum',
     statusBarStyle: 'black-translucent',
+    startupImage: '/apple-icon.png',
+  },
+  icons: {
+    apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
   },
   formatDetection: {
     telephone: false,
